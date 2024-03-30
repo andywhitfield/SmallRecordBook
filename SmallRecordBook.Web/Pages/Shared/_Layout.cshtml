@@ -1,0 +1,62 @@
+﻿@inject IUserService UserService
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" sizes="16x16" href="/images/srb.png">
+    <link rel="apple-touch-icon" href="/images/srb.png" sizes="32x32" />
+    <title>Small:RecordBook</title>
+    <environment names="Development">
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    </environment>
+    <environment names="Staging,Production">
+    <link rel="stylesheet" href="/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    <header>
+        <nav class="navbar-header">
+            <a href="/">
+                <img src="/images/srb.png" height="38" width="38" />
+                <span>
+                    Small:RecordBook
+                </span>
+            </a>
+        </nav>
+        <nav class="navbar-main">
+            <div class="navbar-nav">
+                @if (UserService.IsLoggedIn) {
+                    <form method="get" action="/find">
+                    <span class="narrow-hide"><input type="text" name="q" placeholder="Find item..." /> <input type="submit" value="Find"/> |</span> <a href="/groups">Edit groups</a> | <a href="/profile">Profile</a> | <a href="/signout">Logout</a>
+                    </form>
+                }
+            </div>
+            <div>
+                <img class="nav-show" src="/images/add.png" height="24" width="24" />
+                <img class="nav-close" src="/images/close.png" height="24" width="24" />
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        &#169; @DateTime.Today.Year Small:RecordBook
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <environment names="Development">
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+    <script type="text/javascript">
+        $(function() { srbInitialise() })
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
