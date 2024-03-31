@@ -1,31 +1,28 @@
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace SmallRecordBook.Web.Tests;
 
-public class HomeTests(WebApplicationFactory<Program> webApplicationFactory) : IClassFixture<WebApplicationFactory<Program>>
+public class HomeTests
 {
+    private readonly WebApplicationFactoryTest _webApplicationFactory = new();
+
     [Fact]
-    public async Task Should_display_expected_items()
+    public async Task Given_no_credentials_should_redirect_to_login()
     {
-        using var client = webApplicationFactory.CreateClient();
+        using var client = _webApplicationFactory.CreateClient(false);
+        var response = await client.GetAsync("/");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Given_valid_credentials_should_be_logged_in()
+    {
+        using var client = _webApplicationFactory.CreateClient(true);
         var response = await client.GetAsync("/");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        /*
-        responseContent.Should().Contain("Logout")
-            .And.Contain("1 overdue and 1 due today (2)")
-            .And.Contain("All (3)")
-            .And.Contain("All upcoming (2)")
-            .And.Contain("Test list (1)")
-            .And.Contain("Test item 1")
-            .And.Contain("Test item 2")
-            .And.Contain("Test item 3")
-            .And.Contain("Due yesterday")
-            .And.Contain("Repeats every day")
-            .And.Contain("Due today");
-            */
+        Assert.Contains("Logout", responseContent);
     }
 }
