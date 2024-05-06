@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using SmallRecordBook.Web.Repositories;
 using SmallRecordBook.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +60,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 app.MapRazorPages();
+
+using (var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+    scope.ServiceProvider.GetRequiredService<ISqliteDataContext>().Migrate();
+
 app.Run();
 
 public partial class Program { }
