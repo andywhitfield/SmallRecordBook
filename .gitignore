@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 .keys/
 .DS_Store
+smallrecordbook.db*

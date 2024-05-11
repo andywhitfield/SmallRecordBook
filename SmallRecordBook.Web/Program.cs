@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.EntityFrameworkCore;
 using SmallRecordBook.Web.Repositories;
 using SmallRecordBook.Web.Services;
 
@@ -11,11 +12,20 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/signinverify");
     options.Conventions.AllowAnonymousToPage("/signout");
 });
-builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddDbContext<SqliteDataContext>((serviceProvider, options) =>
+{
+    var sqliteConnectionString = builder.Configuration.GetConnectionString("SmallRecordBook");
+    serviceProvider.GetRequiredService<ILogger<Program>>().LogInformation($"Using connection string: {sqliteConnectionString}");
+    options.UseSqlite(sqliteConnectionString);
+});
+builder.Services
+    .AddTransient<IUserService, UserService>()
+    .AddScoped(sp => (ISqliteDataContext)sp.GetRequiredService<SqliteDataContext>())
+    .AddScoped<IUserAccountRepository, UserAccountRepository>();
 
 builder.Services
     .AddHttpContextAccessor()
-    .ConfigureApplicationCookie(c => c.Cookie.Name = "smalllister")
+    .ConfigureApplicationCookie(c => c.Cookie.Name = "smallrecordbook")
     .AddAuthentication(o => o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(o =>
     {
