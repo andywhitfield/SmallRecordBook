@@ -11,7 +11,7 @@ public class HomeTests
     public async Task Given_no_credentials_should_redirect_to_login()
     {
         using var client = _webApplicationFactory.CreateClient(false);
-        var response = await client.GetAsync("/");
+        using var response = await client.GetAsync("/");
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
@@ -19,7 +19,7 @@ public class HomeTests
     public async Task Given_valid_credentials_should_be_logged_in()
     {
         using var client = _webApplicationFactory.CreateClient(true);
-        var response = await client.GetAsync("/");
+        using var response = await client.GetAsync("/");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.Contains("Logout", responseContent);
