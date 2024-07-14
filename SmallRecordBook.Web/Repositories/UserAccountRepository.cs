@@ -4,7 +4,7 @@ using SmallRecordBook.Web.Models;
 
 namespace SmallRecordBook.Web.Repositories;
 
-public class UserAccountRepository(SqliteDataContext context, ILogger<UserAccountRepository> logger)
+public class UserAccountRepository(ILogger<UserAccountRepository> logger, SqliteDataContext context)
     : IUserAccountRepository
 {
     public Task<UserAccount?> GetAsync(int userAccountId) =>
@@ -26,7 +26,7 @@ public class UserAccountRepository(SqliteDataContext context, ILogger<UserAccoun
 
     private string? GetEmailFromPrincipal(ClaimsPrincipal user)
     {
-        logger.LogTrace($"Getting email from user: {user?.Identity?.Name}: [{string.Join(',', user?.Claims.Select(c => $"{c.Type}={c.Value}") ?? Enumerable.Empty<string>())}]");
+        logger.LogTrace("Getting email from user: {Name}: [{Claims}]", user?.Identity?.Name, string.Join(',', user?.Claims.Select(c => $"{c.Type}={c.Value}") ?? []));
         return user?.FindFirstValue(ClaimTypes.Name);
     }
 

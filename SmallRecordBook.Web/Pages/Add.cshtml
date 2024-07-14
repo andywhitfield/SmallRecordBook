@@ -1,0 +1,41 @@
+﻿@page
+@model AddModel
+
+<aside>
+    <nav>
+        <ul>
+            <li class="TODO"><a href="TODO">GROUP 1</a></li>
+            <li class="TODO"><a href="TODO">GROUP 2</a></li>
+        </ul>
+    </nav>
+</aside>
+
+<article>
+    <form name="srb-add" method="post" action="/add">
+    @Html.AntiForgeryToken()
+    <fieldset>
+    <legend>Add new record entry</legend>
+    <div>
+        <label for="srb-add-date">Date:</label>
+        <input type="date" id="srb-add-date" name="entrydate" class="srb-add-date" value="@Model.EntryDate" />
+    </div>
+    <div>
+        <label for="srb-add-title">Title:</label>
+        <input type="text" id="srb-add-title" name="title" class="srb-add-title" autofocus value="@Model.Title" />
+    </div>
+    <div>
+        <label for="srb-add-description">Description:</label>
+        <textarea id="srb-add-description" name="description" class="srb-add-description" wrap="off">@Model.Description</textarea>
+    </div>
+    <div>
+        <label for="srb-add-reminddate">Remind me:</label>
+        In a week / month / year selector?
+        Or on date: <input type="date" id="srb-add-reminddate" name="reminddate" class="srb-add-reminddate" value="@Model.RemindDate" />
+    </div>
+    <div>
+        <label></label>
+        <button type="submit" data-depends="input.srb-add-title">Add</button>
+    </div>
+    </fieldset>
+    </form>
+</article>

@@ -23,7 +23,7 @@ public class SigninModel(ILogger<SigninModel> logger, IConfiguration configurati
 
     public async Task<IActionResult> OnPost()
     {
-        logger.LogInformation($"Checking user: {Email} / {ReturnUrl}");
+        logger.LogInformation("Checking user: {Email} / {ReturnUrl}", Email, ReturnUrl);
 
         if (string.IsNullOrEmpty(Email))
             return Page();
@@ -32,7 +32,7 @@ public class SigninModel(ILogger<SigninModel> logger, IConfiguration configurati
         string options;
         if ((user = await userAccountRepository.GetUserAccountByEmailAsync(Email)) != null)
         {
-            logger.LogTrace($"Found existing user account with email [{Email}], creating assertion options");
+            logger.LogTrace("Found existing user account with email [{Email}], creating assertion options", Email);
             options = fido2.GetAssertionOptions(
                 await userAccountRepository
                     .GetUserAccountCredentialsAsync(user)
@@ -49,7 +49,7 @@ public class SigninModel(ILogger<SigninModel> logger, IConfiguration configurati
         }
         else
         {
-            logger.LogTrace($"Found no user account with email [{Email}], creating request new creds options");
+            logger.LogTrace("Found no user account with email [{Email}], creating request new creds options", Email);
             options = fido2.RequestNewCredential(
                 new Fido2User() { Id = Encoding.UTF8.GetBytes(Email), Name = Email, DisplayName = Email },
                 [],
@@ -64,7 +64,7 @@ public class SigninModel(ILogger<SigninModel> logger, IConfiguration configurati
             ).ToJson();
         }
 
-        logger.LogTrace($"Created sign in options for: {Email}: {options}");
+        logger.LogTrace("Created sign in options for: {Email}: {options}", Email, options);
         return RedirectToPage("./signinverify", routeValues: new { ReturnUrl, Email, VerifyOptions = options });
     }
 }
