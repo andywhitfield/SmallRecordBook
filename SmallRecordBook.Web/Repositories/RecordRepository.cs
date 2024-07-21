@@ -7,6 +7,12 @@ public class RecordRepository(
     SqliteDataContext context)
     : IRecordRepository
 {
+    public IEnumerable<RecordEntry> GetAllAsync(UserAccount user)
+        => context.RecordEntries
+            .Where(e => e.UserAccountId == user.UserAccountId && e.DeletedDateTime == null)
+            .OrderBy(e => e.EntryDate)
+            .ThenBy(e => e.Title);
+
     public async Task<RecordEntry> AddAsync(UserAccount user, DateOnly entryDate, string title, string? description, DateOnly? reminderDate)
     {
         RecordEntry newRecordEntry = new() {

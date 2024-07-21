@@ -11,5 +11,37 @@
 </aside>
 
 <article>
-    <a href="/add">Add</a> | List | Calendar
+    <a href="/add">Add</a> | List | <a href="TODO">Calendar</a>
+
+    @if (Model.RecordEntries.Any()) {
+    <ul class="srb-list">
+        <li class="srb-list">
+            <ul class="srb-list-item">
+                @foreach (var recordEntry in Model.RecordEntries) {
+                <li class="srb-list-item" data-group="TODO" data-entry="TODO">
+                    <div></div>
+                    <div class="srb-list-item-entry">
+                        <div>
+                            @recordEntry.EntryDate.ToString("dddd dd MMMM yyyy")
+                        </div>
+                        <div>
+                            @recordEntry.Title
+                        </div>
+                        <div>
+                            @recordEntry.Description
+                        </div>
+                    </div>
+                    <div>
+                        @if (recordEntry.ReminderDate != null) {
+                        <span>Reminder set for @recordEntry.ReminderDate.Value.ToString("dddd dd MMMM yyyy")</span>
+                        }
+                    </div>
+                </li>
+                }
+            </ul>
+        </li>
+    </ul>
+    } else {
+    <p>You have no entries in this group. TODO...</p>
+    }
 </article>

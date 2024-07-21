@@ -179,6 +179,7 @@ ul.srb-list-item>li {
     display: flex;
     background-color: #92d3d4;
     margin: 2px;
+    border: 1px solid #92d3d4;
 }
 
 ul.srb-list-item>li>div:nth-child(2)>form {
@@ -193,10 +194,6 @@ ul.srb-list-item>li>div:last-child {
     width: 130px;
 }
 
-ul.srb-list-item>li>div:last-child span {
-    font-size: 10pt;
-}
-
 ul.srb-list-item>li>div {
     padding: 0 10px 0 0;
 }
@@ -205,6 +202,18 @@ ul.srb-list-item>li>div {
     margin-top: 2px;
     font-size: 11pt;
     white-space: pre-line;
+}
+
+div.srb-list-item-entry>div:first-child {
+    font-weight: bold;
+}
+
+div.srb-list-item-entry>div:nth-child(3) {
+    font-size: smaller;
+}
+
+li.srb-list-item:hover {
+    border-color: #b100ff;
 }
 
 form[name="srb-list-add"] label {
