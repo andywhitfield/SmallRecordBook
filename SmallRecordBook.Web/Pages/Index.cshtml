@@ -4,8 +4,10 @@
 <aside>
     <nav>
         <ul>
-            <li class="TODO"><a href="TODO">GROUP 1</a></li>
-            <li class="TODO"><a href="TODO">GROUP 2</a></li>
+            <li class="TODO"><a href="TODO">All entries</a></li>
+            @foreach (var tag in Model.Tags) {
+            <li class="TODO"><a href="TODO">@tag</a></li>
+            }
         </ul>
     </nav>
 </aside>

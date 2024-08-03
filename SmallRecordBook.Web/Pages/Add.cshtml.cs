@@ -13,6 +13,7 @@ public class AddModel(ILogger<AddModel> logger,
     [BindProperty(SupportsGet = true)] public string? Title { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? Description { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? RemindDate { get; set; } = "";
+    [BindProperty(SupportsGet = true)] public string? Tags { get; set; } = "";
 
     public void OnGet() => EntryDate ??= DateTime.Today.ToString("yyyy-MM-dd");
 
@@ -20,13 +21,13 @@ public class AddModel(ILogger<AddModel> logger,
     {
         var entryDate = ParseDate(EntryDate);
         var reminderDate = string.IsNullOrEmpty(RemindDate) ? (DateOnly?) null : ParseDate(RemindDate);
-        logger.LogDebug("Creating new record entry on [{EntryDate}][{ParsedEntryDate}] with title [{Title}]; description [{Description}]; reminder date [{RemindDate}][{ParsedRemindDate}]",
-            EntryDate, entryDate, Title, Description, RemindDate, reminderDate);
+        logger.LogDebug("Creating new record entry on [{EntryDate}][{ParsedEntryDate}] with title [{Title}]; description [{Description}]; reminder date [{RemindDate}][{ParsedRemindDate}]; tags [{Tags}]",
+            EntryDate, entryDate, Title, Description, RemindDate, reminderDate, Tags);
         var newRecordEntry = await recordRepository.AddAsync(
             await userAccountRepository.GetUserAccountAsync(User),
-            entryDate, Title ?? "", Description, reminderDate);
+            entryDate, Title ?? "", Description, reminderDate, Tags);
 
-        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]", newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate);
+        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]", newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, string.Join(',', newRecordEntry.RecordEntryTags?.Select(t => t.Tag) ?? []));
         return Redirect("./");
 
         static DateOnly ParseDate(string? date) =>
