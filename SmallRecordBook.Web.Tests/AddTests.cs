@@ -1,6 +1,5 @@
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
-using SmallRecordBook.Web.Models;
 using SmallRecordBook.Web.Repositories;
 using Xunit;
 
@@ -10,14 +9,7 @@ public class AddTests : IAsyncLifetime
 {
     private readonly WebApplicationFactoryTest _webApplicationFactory = new();
 
-    public async Task InitializeAsync()
-    {
-        await using var serviceScope = _webApplicationFactory.Services.CreateAsyncScope();
-        using var context = serviceScope.ServiceProvider.GetRequiredService<SqliteDataContext>();
-        context.Migrate();
-        var userAccount = context.UserAccounts.Add(new UserAccount { Email = "test-user-1" });
-        await context.SaveChangesAsync();
-    }
+    public Task InitializeAsync() => TestStubAuthHandler.AddTestUserAsync(_webApplicationFactory.Services);
 
     [Fact]
     public async Task Should_show_add_new_record_form()

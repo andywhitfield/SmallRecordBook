@@ -3,9 +3,11 @@ using Xunit;
 
 namespace SmallRecordBook.Web.Tests;
 
-public class HomeTests
+public class HomeTests : IAsyncLifetime
 {
     private readonly WebApplicationFactoryTest _webApplicationFactory = new();
+
+    public Task InitializeAsync() => TestStubAuthHandler.AddTestUserAsync(_webApplicationFactory.Services);
 
     [Fact]
     public async Task Given_no_credentials_should_redirect_to_login()
@@ -23,5 +25,11 @@ public class HomeTests
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.Contains("Logout", responseContent);
+    }
+
+    public Task DisposeAsync()
+    {
+        _webApplicationFactory.Dispose();
+        return Task.CompletedTask;
     }
 }
