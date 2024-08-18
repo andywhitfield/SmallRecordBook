@@ -3,12 +3,7 @@
 
 <aside>
     <nav>
-        <ul>
-            <li class="TODO"><a href="TODO">All entries</a></li>
-            @foreach (var tag in Model.Tags) {
-            <li class="TODO"><a href="TODO">@tag</a></li>
-            }
-        </ul>
+        <vc:user-tag-list />
     </nav>
 </aside>
 
