@@ -1,35 +1,33 @@
 using System.Net;
-using Xunit;
 
 namespace SmallRecordBook.Web.Tests;
 
-public class HomeTests : IAsyncLifetime
+[TestClass]
+public class HomeTests
 {
     private readonly WebApplicationFactoryTest _webApplicationFactory = new();
 
+    [TestInitialize]
     public Task InitializeAsync() => TestStubAuthHandler.AddTestUserAsync(_webApplicationFactory.Services);
 
-    [Fact]
+    [TestMethod]
     public async Task Given_no_credentials_should_redirect_to_login()
     {
         using var client = _webApplicationFactory.CreateClient(false);
         using var response = await client.GetAsync("/");
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Given_valid_credentials_should_be_logged_in()
     {
         using var client = _webApplicationFactory.CreateClient(true);
         using var response = await client.GetAsync("/");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Logout", responseContent);
+        StringAssert.Contains(responseContent, "Logout");
     }
 
-    public Task DisposeAsync()
-    {
-        _webApplicationFactory.Dispose();
-        return Task.CompletedTask;
-    }
+    [TestCleanup]
+    public void Cleanup() => _webApplicationFactory.Dispose();
 }

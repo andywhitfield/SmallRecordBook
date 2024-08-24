@@ -1,27 +1,28 @@
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using SmallRecordBook.Web.Repositories;
-using Xunit;
 
 namespace SmallRecordBook.Web.Tests;
 
-public class AddTests : IAsyncLifetime
+[TestClass]
+public class AddTests
 {
     private readonly WebApplicationFactoryTest _webApplicationFactory = new();
 
+    [TestInitialize]
     public Task InitializeAsync() => TestStubAuthHandler.AddTestUserAsync(_webApplicationFactory.Services);
 
-    [Fact]
+    [TestMethod]
     public async Task Should_show_add_new_record_form()
     {
         using var client = _webApplicationFactory.CreateClient(true);
         using var response = await client.GetAsync("/add");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Add new record entry", responseContent);
+        StringAssert.Contains(responseContent, "Add new record entry");
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Given_completed_form_should_show_add_new_record_and_redirect_to_home_page()
     {
         using var client = _webApplicationFactory.CreateClient(true, false);
@@ -33,23 +34,20 @@ public class AddTests : IAsyncLifetime
             { "Title", "New record entry" },
             { "__RequestVerificationToken", WebApplicationFactoryTest.GetFormValidationToken(addPage, "/add") }
         }));
-        Assert.Equal(HttpStatusCode.Redirect, responsePost.StatusCode);
-        Assert.Equal("./", responsePost.Headers.Location?.OriginalString);
+        Assert.AreEqual(HttpStatusCode.Redirect, responsePost.StatusCode);
+        Assert.AreEqual("./", responsePost.Headers.Location?.OriginalString);
 
         await using var serviceScope = _webApplicationFactory.Services.CreateAsyncScope();
         using var context = serviceScope.ServiceProvider.GetRequiredService<SqliteDataContext>();
-        Assert.Equal(1, context.RecordEntries.Count());
-        Assert.Equal(new DateOnly(2024, 7, 14), context.RecordEntries.Single().EntryDate);
-        Assert.Equal("New record entry", context.RecordEntries.Single().Title);
-        Assert.Equal(DateTime.UtcNow, context.RecordEntries.Single().CreatedDateTime, TimeSpan.FromSeconds(1));
-        Assert.Equal("", context.RecordEntries.Single().Description);
-        Assert.Null(context.RecordEntries.Single().ReminderDate);
-        Assert.Null(context.RecordEntries.Single().DeletedDateTime);
+        Assert.AreEqual(1, context.RecordEntries.Count());
+        Assert.AreEqual(new DateOnly(2024, 7, 14), context.RecordEntries.Single().EntryDate);
+        Assert.AreEqual("New record entry", context.RecordEntries.Single().Title);
+        Assert.AreEqual(DateTime.UtcNow.Ticks, context.RecordEntries.Single().CreatedDateTime.Ticks, TimeSpan.FromSeconds(1).Ticks);
+        Assert.AreEqual("", context.RecordEntries.Single().Description);
+        Assert.IsNull(context.RecordEntries.Single().ReminderDate);
+        Assert.IsNull(context.RecordEntries.Single().DeletedDateTime);
     }
 
-    public Task DisposeAsync()
-    {
-        _webApplicationFactory.Dispose();
-        return Task.CompletedTask;
-    }
+    [TestCleanup]
+    public void Cleanup() => _webApplicationFactory.Dispose();
 }
