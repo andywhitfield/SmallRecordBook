@@ -154,6 +154,12 @@ ul.srb-list {
     border-bottom: 2px solid #b1c9ff;
 }
 
+ul.srb-list a,
+ul.srb-list a:link,
+ul.srb-list a:visited {
+    color: black;
+}
+
 .srb-list-due {
     font-weight: bold;
 }

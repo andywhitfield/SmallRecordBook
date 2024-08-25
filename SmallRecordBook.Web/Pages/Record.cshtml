@@ -1,0 +1,43 @@
+﻿@page "/record/{recordEntryId}"
+@model RecordModel
+
+<aside>
+    <nav>
+        <vc:user-tag-list />
+    </nav>
+</aside>
+
+<article>
+    <form name="srb-record" method="post" action="/record/@Model.EntryId">
+    @Html.AntiForgeryToken()
+    <fieldset>
+    <legend>Record entry</legend>
+    <div>
+        <label for="srb-record-date">Date:</label>
+        <input type="date" id="srb-record-date" name="entrydate" class="srb-record-date" value="@Model.EntryDate" />
+    </div>
+    <div>
+        <label for="srb-record-title">Title:</label>
+        <input type="text" id="srb-record-title" name="title" class="srb-record-title" value="@Model.Title" />
+    </div>
+    <div>
+        <label for="srb-record-description">Description:</label>
+        <textarea id="srb-record-description" name="description" class="srb-record-description" wrap="off">@Model.Description</textarea>
+    </div>
+    <div>
+        <label for="srb-record-reminddate">Remind me:</label>
+        In a week / month / year selector?
+        Or on date: <input type="date" id="srb-record-reminddate" name="reminddate" class="srb-record-reminddate" value="@Model.RemindDate" />
+    </div>
+    <div>
+        <label for="srb-record-tags">Tags:</label>
+        <input type="text" id="srb-record-tags" name="tags" class="srb-record-tags" value="@Model.Tags" />
+    </div>
+    <div>
+        <label></label>
+        <button type="submit" data-depends="input.srb-record-title">Save</button>
+        <button type="button" name="delete" value="delete">Delete</button> <!-- TODO: add confirm prompt -->
+    </div>
+    </fieldset>
+    </form>
+</article>

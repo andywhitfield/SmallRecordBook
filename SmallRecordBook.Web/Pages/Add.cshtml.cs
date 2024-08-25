@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SmallRecordBook.Web.Pages.ViewModels;
 using SmallRecordBook.Web.Repositories;
 
 namespace SmallRecordBook.Web.Pages;
@@ -19,8 +20,8 @@ public class AddModel(ILogger<AddModel> logger,
 
     public async Task<IActionResult> OnPost()
     {
-        var entryDate = ParseDate(EntryDate);
-        var reminderDate = string.IsNullOrEmpty(RemindDate) ? (DateOnly?) null : ParseDate(RemindDate);
+        var entryDate = EntryDate.ParseDateOnly();
+        var reminderDate = string.IsNullOrEmpty(RemindDate) ? (DateOnly?) null : RemindDate.ParseDateOnly();
         logger.LogDebug("Creating new record entry on [{EntryDate}][{ParsedEntryDate}] with title [{Title}]; description [{Description}]; reminder date [{RemindDate}][{ParsedRemindDate}]; tags [{Tags}]",
             EntryDate, entryDate, Title, Description, RemindDate, reminderDate, Tags);
         var newRecordEntry = await recordRepository.AddAsync(
@@ -29,8 +30,5 @@ public class AddModel(ILogger<AddModel> logger,
 
         logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]", newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, string.Join(',', newRecordEntry.RecordEntryTags?.Select(t => t.Tag) ?? []));
         return Redirect("./");
-
-        static DateOnly ParseDate(string? date) =>
-            DateOnly.TryParseExact(date, "yyyy-MM-dd", out var d) ? d : DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

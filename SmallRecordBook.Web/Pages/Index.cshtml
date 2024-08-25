@@ -15,11 +15,11 @@
         <li class="srb-list">
             <ul class="srb-list-item">
                 @foreach (var recordEntry in Model.RecordEntries) {
-                <li class="srb-list-item" data-group="TODO" data-entry="TODO">
+                <li class="srb-list-item">
                     <div></div>
                     <div class="srb-list-item-entry">
                         <div>
-                            @recordEntry.EntryDate.ToString("dddd dd MMMM yyyy")
+                            <a href="/record/@recordEntry.RecordEntryId">@recordEntry.EntryDate.ToString("dddd dd MMMM yyyy")</a>
                         </div>
                         <div>
                             @recordEntry.Title

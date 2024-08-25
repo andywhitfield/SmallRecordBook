@@ -10,4 +10,6 @@ public class SqliteDataContext(DbContextOptions<SqliteDataContext> options) : Db
     public DbSet<RecordEntry> RecordEntries { get; set; }
     public DbSet<RecordEntryTag> RecordEntryTags { get; set; }
     public void Migrate() => Database.Migrate();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        => modelBuilder.Entity<RecordEntry>().Navigation(re => re.RecordEntryTags).AutoInclude();
 }

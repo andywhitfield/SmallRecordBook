@@ -8,6 +8,8 @@ public class RecordRepository(
     SqliteDataContext context)
     : IRecordRepository
 {
+    public ValueTask<RecordEntry?> GetByIdAsync(int recordEntryId) => context.RecordEntries.FindAsync(recordEntryId);
+
     public IEnumerable<RecordEntry> GetAll(UserAccount user)
         => context.RecordEntries
             .Where(e => e.UserAccountId == user.UserAccountId && e.DeletedDateTime == null)
