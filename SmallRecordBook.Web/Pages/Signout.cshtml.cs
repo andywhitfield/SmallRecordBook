@@ -14,6 +14,6 @@ public class SignoutModel : PageModel
     private async Task<IActionResult> Signout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return Redirect("~/");
+        return Redirect("/");
     }
 }

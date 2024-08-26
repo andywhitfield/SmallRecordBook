@@ -21,14 +21,14 @@ public class AddModel(ILogger<AddModel> logger,
     public async Task<IActionResult> OnPost()
     {
         var entryDate = EntryDate.ParseDateOnly();
-        var reminderDate = string.IsNullOrEmpty(RemindDate) ? (DateOnly?) null : RemindDate.ParseDateOnly();
+        var reminderDate = RemindDate.ParseDateOnly(null);
         logger.LogDebug("Creating new record entry on [{EntryDate}][{ParsedEntryDate}] with title [{Title}]; description [{Description}]; reminder date [{RemindDate}][{ParsedRemindDate}]; tags [{Tags}]",
             EntryDate, entryDate, Title, Description, RemindDate, reminderDate, Tags);
         var newRecordEntry = await recordRepository.AddAsync(
             await userAccountRepository.GetUserAccountAsync(User),
             entryDate, Title ?? "", Description, reminderDate, Tags);
 
-        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]", newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, string.Join(',', newRecordEntry.RecordEntryTags?.Select(t => t.Tag) ?? []));
-        return Redirect("./");
+        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]", newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, string.Join(',', newRecordEntry.ActiveRecordEntryTags?.Select(t => t.Tag) ?? []));
+        return Redirect("/");
     }
 }

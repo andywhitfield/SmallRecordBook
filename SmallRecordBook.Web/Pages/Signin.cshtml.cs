@@ -64,7 +64,7 @@ public class SigninModel(ILogger<SigninModel> logger, IConfiguration configurati
             ).ToJson();
         }
 
-        logger.LogTrace("Created sign in options for: {Email}: {options}", Email, options);
+        logger.LogTrace("Created sign in options for: {Email}: {Options}", Email, options);
         return RedirectToPage("./signinverify", routeValues: new { ReturnUrl, Email, VerifyOptions = options });
     }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmallRecordBook.Web.Models;
 
@@ -18,4 +19,6 @@ public class RecordEntry
     public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
     public DateTime? LastUpdateDateTime { get; set; }
     public DateTime? DeletedDateTime { get; set; }
+    [NotMapped]
+    public IEnumerable<RecordEntryTag>? ActiveRecordEntryTags => RecordEntryTags?.Where(ret => ret.DeletedDateTime == null);
 }

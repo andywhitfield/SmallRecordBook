@@ -21,6 +21,12 @@
         e.preventDefault();
         return false;
     });
+    $('[data-confirm]').click(function(event) {
+        if (!confirm($(this).attr('data-confirm'))) {
+            event.preventDefault();
+            return false;
+        }
+    });
     $('[data-depends]').each(function() {
         let btnWithDependency = $(this);
         let dependentFormObject = $(btnWithDependency.attr('data-depends'));

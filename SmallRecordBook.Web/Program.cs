@@ -15,7 +15,7 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddDbContext<SqliteDataContext>((serviceProvider, options) =>
 {
     var sqliteConnectionString = builder.Configuration.GetConnectionString("SmallRecordBook");
-    serviceProvider.GetRequiredService<ILogger<Program>>().LogInformation($"Using connection string: {sqliteConnectionString}");
+    serviceProvider.GetRequiredService<ILogger<Program>>().LogInformation("Using connection string: {SqliteConnectionString}", sqliteConnectionString);
     options.UseSqlite(sqliteConnectionString);
 #if DEBUG
     options.EnableSensitiveDataLogging();
