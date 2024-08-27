@@ -28,7 +28,9 @@ public class AddModel(ILogger<AddModel> logger,
             await userAccountRepository.GetUserAccountAsync(User),
             entryDate, Title ?? "", Description, reminderDate, Tags);
 
-        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]", newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, string.Join(',', newRecordEntry.ActiveRecordEntryTags?.Select(t => t.Tag) ?? []));
+        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]",
+            newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate,
+            string.Join(',', newRecordEntry.ActiveRecordEntryTags.Select(t => t.Tag) ?? []));
         return Redirect("/");
     }
 }

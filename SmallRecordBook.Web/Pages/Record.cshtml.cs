@@ -34,7 +34,7 @@ public class RecordModel(ILogger<RecordModel> logger,
         Title = recordEntry.Title;
         Description = recordEntry.Description;
         RemindDate = recordEntry.ReminderDate.ToDisplayString();
-        Tags = string.Join(' ', recordEntry.ActiveRecordEntryTags?.Select(ret => ret.Tag).OrderBy(x => x).AsEnumerable() ?? []);
+        Tags = string.Join(' ', recordEntry.ActiveRecordEntryTags.Select(ret => ret.Tag));
 
         return Page();
     }

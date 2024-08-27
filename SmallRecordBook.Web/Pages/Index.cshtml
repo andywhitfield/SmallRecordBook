@@ -27,6 +27,13 @@
                         <div>
                             @recordEntry.Description
                         </div>
+                        @if (recordEntry.ActiveRecordEntryTags.Any()) {
+                        <div class="srb-tag">
+                            @foreach (var tag in recordEntry.ActiveRecordEntryTags) {
+                            <a href="/TODO">@tag.Tag</a>
+                            }
+                        </div>
+                        }
                     </div>
                     <div>
                         @if (recordEntry.ReminderDate != null) {

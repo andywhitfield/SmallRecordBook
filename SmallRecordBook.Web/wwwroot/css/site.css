@@ -241,6 +241,19 @@ input.srb-list-add-due {
     width: 110px;
 }
 
+div.srb-tag {
+    padding: 2px 0px 2px 0px;
+}
+
+div.srb-tag a,
+div.srb-tag a:link,
+div.srb-tag a:visited {
+    font-size: small;
+    padding: 1px 2px 1px 2px;
+    background-color: #b1c9ff;
+    color: white;
+}
+
 .pagination {
     display: inline-block;
 }
@@ -305,15 +318,19 @@ ul.srb-list li.placeholder:before {
         -webkit-flex-direction: column;
         flex-direction: column;
     }
+
     aside {
         display: none;
     }
+
     .nav-show {
         display: inline;
     }
+
     .narrow-hide {
         display: none;
     }
+
     ul.srb-list-item>li {
         flex-direction: column;
     }
@@ -323,19 +340,24 @@ ul.srb-list li.placeholder:before {
     body {
         background-color: black;
     }
+
     article {
         background-color: black;
         color: white;
     }
+
     footer {
         color: white;
     }
+
     span.srb-toolbar a {
         color: white;
     }
+
     .pagination>a {
         color: white;
     }
+
     ul.srb-list-item>li,
     span.selected {
         color: black;

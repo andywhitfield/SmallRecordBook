@@ -20,5 +20,6 @@ public class RecordEntry
     public DateTime? LastUpdateDateTime { get; set; }
     public DateTime? DeletedDateTime { get; set; }
     [NotMapped]
-    public IEnumerable<RecordEntryTag>? ActiveRecordEntryTags => RecordEntryTags?.Where(ret => ret.DeletedDateTime == null);
+    public IEnumerable<RecordEntryTag> ActiveRecordEntryTags =>
+        (RecordEntryTags ?? []).Where(ret => ret.DeletedDateTime == null).OrderBy(ret => ret.Tag);
 }
