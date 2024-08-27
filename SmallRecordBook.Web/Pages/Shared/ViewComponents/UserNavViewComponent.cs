@@ -4,7 +4,7 @@ using SmallRecordBook.Web.Repositories;
 
 namespace SmallRecordBook.Web.Pages.Shared.ViewComponents;
 
-public class UserTagListViewComponent(
+public class UserNavViewComponent(
     IUserAccountRepository userAccountRepository,
     IRecordRepository recordRepository)
     : ViewComponent
@@ -12,6 +12,9 @@ public class UserTagListViewComponent(
     public async Task<IViewComponentResult> InvokeAsync()
     {
         var user = await userAccountRepository.GetUserAccountAsync(UserClaimsPrincipal);
-        return View(new UserTagListModel(recordRepository.GetTags(user)));
+        return View(new UserNavModel(
+            recordRepository.GetTags(user),
+            recordRepository.GetBy(user, re => re.ReminderDate != null && re.ReminderDate.Value < DateOnly.FromDateTime(DateTime.UtcNow)).Count(),
+            Request));
     }
 }

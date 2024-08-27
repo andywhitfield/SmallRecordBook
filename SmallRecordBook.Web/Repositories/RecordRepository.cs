@@ -20,6 +20,11 @@ public class RecordRepository(
             .OrderBy(e => e.EntryDate)
             .ThenBy(e => e.Title);
 
+    public IEnumerable<RecordEntry> GetBy(UserAccount user, Func<RecordEntry, bool> condition)
+        => context.RecordEntries
+            .Where(e => e.UserAccountId == user.UserAccountId && e.DeletedDateTime == null)
+            .Where(condition);
+
     public async Task<RecordEntry> AddAsync(UserAccount user, DateOnly entryDate, string title, string? description, DateOnly? reminderDate, string? tags)
     {
         RecordEntry newRecordEntry = new()

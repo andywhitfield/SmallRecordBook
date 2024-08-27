@@ -1,12 +1,21 @@
 ﻿@page
-@model IndexModel
+@model RemindersModel
 
 <aside>
     <vc:user-nav />
 </aside>
 
 <article>
-    <a href="/add">Add</a> | List | <a href="TODO">Calendar</a>
+    @if (Model.Sort == "bydatedesc") {
+    <span>Sort by <a href="/reminders?view=@Model.View&sort=bydateasc">newest</a> reminder date.</span>
+    } else {
+    <span>Sort by <a href="/reminders?view=@Model.View&sort=bydatedesc">oldest</a> reminder date.</span>
+    }
+    @if (Model.View == "upcoming") {
+    <span>View <a href="/reminders?view=all&sort=@Model.Sort">everything with a reminder</a>.</span>
+    } else {
+    <span>View <a href="/reminders?view=upcoming&sort=@Model.Sort">only upcoming reminders</a>.</span>
+    }    
 
     @if (Model.RecordEntries.Any()) {
     <ul class="srb-list">
