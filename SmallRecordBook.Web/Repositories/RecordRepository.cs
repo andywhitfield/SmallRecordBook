@@ -50,13 +50,15 @@ public class RecordRepository(
         return newRecordEntry;
     }
 
-    public IEnumerable<string> GetTags(UserAccount user) =>
+    public IEnumerable<(string Tag, int TagCount)> GetTags(UserAccount user) =>
         context.RecordEntryTags
             .Include(ret => ret.RecordEntry)
             .Where(ret => ret.DeletedDateTime == null && ret.RecordEntry.UserAccountId == user.UserAccountId && ret.RecordEntry.DeletedDateTime == null)
             .Select(ret => ret.Tag)
-            .Distinct()
-            .OrderBy(t => t);
+            .GroupBy(t => t)
+            .OrderByDescending(t => t.Count())
+            .ThenBy(t => t.Key)
+            .Select(t => ValueTuple.Create(t.Key, t.Count()));
 
     public async Task SaveAsync(UserAccount user, RecordEntry recordEntry, string? tags)
     {

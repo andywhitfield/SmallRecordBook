@@ -2,7 +2,7 @@
 
 <ul>
     <li class="TODO"><a href="TODO">All entries</a></li>
-    @foreach (var tag in Model.Tags) {
-    <li class="TODO"><a href="TODO">@tag</a></li>
+    @foreach (var (tag, tagCount) in Model.Tags) {
+    <li class="TODO"><a href="TODO">@tag (@tagCount)</a></li>
     }
 </ul>

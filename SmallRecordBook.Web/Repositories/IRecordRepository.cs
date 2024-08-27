@@ -9,5 +9,5 @@ public interface IRecordRepository
     Task<RecordEntry> AddAsync(UserAccount user, DateOnly entryDate, string title, string? description, DateOnly? reminderDate, string? tags);
     Task SaveAsync(UserAccount user, RecordEntry recordEntry, string? tags);
     Task DeleteAsync(UserAccount user, RecordEntry recordEntry);
-    IEnumerable<string> GetTags(UserAccount user);
+    IEnumerable<(string Tag, int TagCount)> GetTags(UserAccount user);
 }
