@@ -22,7 +22,7 @@
         <li class="srb-list">
             <ul class="srb-list-item">
                 @foreach (var recordEntry in Model.RecordEntries) {
-                <li class="srb-list-item">
+                <li class="@recordEntry.ListItemCss()">
                     <div></div>
                     <div class="srb-list-item-entry">
                         <div>
@@ -44,7 +44,7 @@
                     </div>
                     <div>
                         @if (recordEntry.ReminderDate != null) {
-                        <span>Reminder set for @recordEntry.ReminderDate.Value.ToString("dddd dd MMMM yyyy")</span>
+                        <span class="srb-reminder">Reminder set for @recordEntry.ReminderDate.Value.ToString("dddd dd MMMM yyyy")</span>
                         }
                     </div>
                 </li>

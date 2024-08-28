@@ -172,11 +172,11 @@ ul.srb-list-item {
     width: 100%;
 }
 
-.srb-list-item-due div {
+.srb-list-item-due span.srb-reminder {
     font-weight: bold;
 }
 
-.srb-list-item-overdue div {
+.srb-list-item-overdue span.srb-reminder {
     font-weight: bold;
     color: red;
 }
