@@ -18,6 +18,7 @@ public class RecordModel(ILogger<RecordModel> logger,
     [BindProperty(SupportsGet = true)] public string? RemindDone { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? Tags { get; set; } = "";
     [BindProperty] public string? Delete { get; set; }
+    [BindProperty] public string? AddAnother { get; set; }
 
     public async Task<IActionResult> OnGet([FromRoute] int recordEntryId)
     {
@@ -36,7 +37,7 @@ public class RecordModel(ILogger<RecordModel> logger,
         Description = recordEntry.Description;
         RemindDate = recordEntry.ReminderDate.ToDisplayString();
         RemindDone = recordEntry.ReminderDone.GetValueOrDefault() ? "true" : "";
-        Tags = string.Join(' ', recordEntry.ActiveRecordEntryTags.Select(ret => ret.Tag));
+        Tags = recordEntry.TagString();
 
         return Page();
     }
@@ -62,6 +63,13 @@ public class RecordModel(ILogger<RecordModel> logger,
             logger.LogDebug("Deleting record entry {RecordEntryId}", recordEntry.RecordEntryId);
             await recordRepository.DeleteAsync(userAccount, recordEntry);
             return Redirect("/");
+        }
+
+        if (!string.IsNullOrEmpty(AddAnother))
+        {
+            // the add page is responsible for setting up a new link entry for recordEntry if required
+            logger.LogDebug("Adding another record entry linked to {RecordEntryId}", recordEntry.RecordEntryId);
+            return Redirect($"/add?parent={recordEntry.RecordEntryId}");
         }
 
         recordEntry.EntryDate = EntryDate.ParseDateOnly();

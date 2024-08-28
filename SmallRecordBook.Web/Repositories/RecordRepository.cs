@@ -11,7 +11,7 @@ public class RecordRepository(
     public async ValueTask<RecordEntry?> GetByIdAsync(UserAccount user, int recordEntryId)
     {
         var recordEntry = await context.RecordEntries.FindAsync(recordEntryId);
-        return recordEntry == null || recordEntry.UserAccountId != user.UserAccountId ? null : recordEntry;
+        return recordEntry == null || recordEntry.DeletedDateTime != null || recordEntry.UserAccountId != user.UserAccountId ? null : recordEntry;
     }
 
     public IEnumerable<RecordEntry> GetAll(UserAccount user)

@@ -16,10 +16,37 @@ public class AddModel(ILogger<AddModel> logger,
     [BindProperty(SupportsGet = true)] public string? RemindDate { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? Tags { get; set; } = "";
 
-    public void OnGet() => EntryDate ??= DateTime.Today.ToString("yyyy-MM-dd");
+    [BindProperty(SupportsGet = true)] public int? Parent { get; set; }
+    [BindProperty] public string? Cancel { get; set; }
+
+    public async Task OnGet()
+    {
+        EntryDate ??= DateTime.Today.ToString("yyyy-MM-dd");
+
+        if (Parent != null)
+        {
+            logger.LogInformation("Getting parent record entry {Parent}", Parent);
+            var userAccount = await userAccountRepository.GetUserAccountAsync(User);
+            var recordEntry = await recordRepository.GetByIdAsync(userAccount, Parent.Value);
+            if (recordEntry != null)
+            {
+                Title = recordEntry.Title;
+                Description = recordEntry.Description;
+                Tags = recordEntry.TagString();
+                // TODO: be nice to add a reminder too, if the parent has one
+                // perhaps once we support reminders like '1 month' / '1 year' then re-visit this
+            }
+        }
+    }
 
     public async Task<IActionResult> OnPost()
     {
+        if (Cancel == "cancel")
+        {
+            logger.LogInformation("Add from existing record {Parent} cancelled, redirecting back to parent", Parent);
+            return Redirect($"/record/{Parent}");
+        }
+
         var entryDate = EntryDate.ParseDateOnly();
         var reminderDate = RemindDate.ParseDateOnly(null);
         logger.LogDebug("Creating new record entry on [{EntryDate}][{ParsedEntryDate}] with title [{Title}]; description [{Description}]; reminder date [{RemindDate}][{ParsedRemindDate}]; tags [{Tags}]",
@@ -29,8 +56,7 @@ public class AddModel(ILogger<AddModel> logger,
             entryDate, Title ?? "", Description, reminderDate, Tags);
 
         logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]",
-            newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate,
-            string.Join(',', newRecordEntry.ActiveRecordEntryTags.Select(t => t.Tag) ?? []));
+            newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, newRecordEntry.TagString());
         return Redirect("/");
     }
 }
