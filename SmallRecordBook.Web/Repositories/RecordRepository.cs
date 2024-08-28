@@ -25,7 +25,8 @@ public class RecordRepository(
             .Where(e => e.UserAccountId == user.UserAccountId && e.DeletedDateTime == null)
             .Where(condition);
 
-    public async Task<RecordEntry> AddAsync(UserAccount user, DateOnly entryDate, string title, string? description, DateOnly? reminderDate, string? tags)
+    public async Task<RecordEntry> AddAsync(UserAccount user, DateOnly entryDate, string title, string? description, DateOnly? reminderDate,
+        string? tags, int? parentRecordEntryId)
     {
         RecordEntry newRecordEntry = new()
         {
@@ -35,6 +36,26 @@ public class RecordRepository(
             Description = description,
             ReminderDate = reminderDate,
         };
+
+        // if there's a parent, we need to get the link guid from the parent entry or create a new one
+        if (parentRecordEntryId != null)
+        {
+            var parentRecordEntry = await GetByIdAsync(user, parentRecordEntryId.Value);
+            if (parentRecordEntry == null || parentRecordEntry.UserAccountId != user.UserAccountId)
+                throw new ArgumentException("UserAccount and parent RecordEntry user mismatch", nameof(parentRecordEntryId));
+            
+            if (parentRecordEntry.LinkReference == null)
+            {
+                logger.LogInformation("Parent record entry {ParentRecordEntryId} has no link reference, creating a new one", parentRecordEntry.RecordEntryId);
+                parentRecordEntry.LinkReference = Guid.NewGuid();
+                parentRecordEntry.LastUpdateDateTime = newRecordEntry.CreatedDateTime;
+            }
+
+            logger.LogInformation("Assiging parent record entry {ParentRecordEntryId} with link reference {ParentRecordEntryLinkReference} to the new entry",
+                parentRecordEntry.RecordEntryId, parentRecordEntry.LinkReference);
+            newRecordEntry.LinkReference = parentRecordEntry.LinkReference;
+        }
+
         context.RecordEntries.Add(newRecordEntry);
 
         var recordEntryTags = (tags ?? "")
@@ -92,7 +113,9 @@ public class RecordRepository(
 
         var deleteDate = DateTime.UtcNow;
         recordEntry.DeletedDateTime = deleteDate;
-        await context.RecordEntryTags.Where(ret => ret.DeletedDateTime == null && ret.RecordEntryId == recordEntry.RecordEntryId).ForEachAsync(t => t.DeletedDateTime = deleteDate);
+        await context.RecordEntryTags
+            .Where(ret => ret.DeletedDateTime == null && ret.RecordEntryId == recordEntry.RecordEntryId)
+            .ForEachAsync(t => t.DeletedDateTime = deleteDate);
 
         await context.SaveChangesAsync();
     }

@@ -44,19 +44,19 @@ public class AddModel(ILogger<AddModel> logger,
         if (Cancel == "cancel")
         {
             logger.LogInformation("Add from existing record {Parent} cancelled, redirecting back to parent", Parent);
-            return Redirect($"/record/{Parent}");
+            return Redirect(Parent != null ? $"/record/{Parent}" : "/");
         }
 
         var entryDate = EntryDate.ParseDateOnly();
         var reminderDate = RemindDate.ParseDateOnly(null);
-        logger.LogDebug("Creating new record entry on [{EntryDate}][{ParsedEntryDate}] with title [{Title}]; description [{Description}]; reminder date [{RemindDate}][{ParsedRemindDate}]; tags [{Tags}]",
-            EntryDate, entryDate, Title, Description, RemindDate, reminderDate, Tags);
+        logger.LogDebug("Creating new record entry on [{EntryDate}][{ParsedEntryDate}] with title [{Title}]; description [{Description}]; reminder date [{RemindDate}][{ParsedRemindDate}]; tags [{Tags}]; parent [{Parent}]",
+            EntryDate, entryDate, Title, Description, RemindDate, reminderDate, Tags, Parent);
         var newRecordEntry = await recordRepository.AddAsync(
             await userAccountRepository.GetUserAccountAsync(User),
-            entryDate, Title ?? "", Description, reminderDate, Tags);
+            entryDate, Title ?? "", Description, reminderDate, Tags, Parent);
 
-        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]",
-            newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, newRecordEntry.TagString());
+        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]; parent [{Parent}]",
+            newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, newRecordEntry.TagString(), Parent);
         return Redirect("/");
     }
 }

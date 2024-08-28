@@ -19,6 +19,7 @@ public class RecordModel(ILogger<RecordModel> logger,
     [BindProperty(SupportsGet = true)] public string? Tags { get; set; } = "";
     [BindProperty] public string? Delete { get; set; }
     [BindProperty] public string? AddAnother { get; set; }
+    public Guid? LinkReference { get; set; }
 
     public async Task<IActionResult> OnGet([FromRoute] int recordEntryId)
     {
@@ -38,6 +39,9 @@ public class RecordModel(ILogger<RecordModel> logger,
         RemindDate = recordEntry.ReminderDate.ToDisplayString();
         RemindDone = recordEntry.ReminderDone.GetValueOrDefault() ? "true" : "";
         Tags = recordEntry.TagString();
+
+        if (recordEntry.LinkReference != null && recordRepository.GetBy(userAccount, re => re.LinkReference == recordEntry.LinkReference).Count() > 1)
+            LinkReference = recordEntry.LinkReference;
 
         return Page();
     }

@@ -39,6 +39,12 @@
         <label for="srb-record-tags">Tags:</label>
         <input type="text" id="srb-record-tags" name="tags" class="srb-record-tags" value="@Model.Tags" />
     </div>
+    @if (Model.LinkReference != null) {
+    <div>
+        <label for="srb-record-links">References:</label>
+        <a href="/?link=@Model.LinkReference">View all linked entries</a>
+    </div>
+    }
     <div>
         <label></label>
         <button type="submit" data-depends="input.srb-record-title">Save</button>
