@@ -35,7 +35,7 @@ public class AddTests
             { "__RequestVerificationToken", WebApplicationFactoryTest.GetFormValidationToken(addPage, "/add") }
         }));
         Assert.AreEqual(HttpStatusCode.Redirect, responsePost.StatusCode);
-        Assert.AreEqual("./", responsePost.Headers.Location?.OriginalString);
+        Assert.AreEqual("/", responsePost.Headers.Location?.OriginalString);
 
         await using var serviceScope = _webApplicationFactory.Services.CreateAsyncScope();
         using var context = serviceScope.ServiceProvider.GetRequiredService<SqliteDataContext>();

@@ -28,6 +28,14 @@
         Or on date: <input type="date" id="srb-record-reminddate" name="reminddate" class="srb-record-reminddate" value="@Model.RemindDate" />
     </div>
     <div>
+        <label for="srb-record-reminddone">Completed reminder:</label>
+        @if (Model.RemindDone == "true") {
+        <input type="checkbox" checked="checked" id="srb-record-reminddone" name="reminddone" class="srb-record-reminddone" value="true" />
+        } else {
+        <input type="checkbox" id="srb-record-reminddone" name="reminddone" class="srb-record-reminddone" value="true" />
+        }
+    </div>
+    <div>
         <label for="srb-record-tags">Tags:</label>
         <input type="text" id="srb-record-tags" name="tags" class="srb-record-tags" value="@Model.Tags" />
     </div>

@@ -18,7 +18,7 @@ public class RemindersModel(
     public async Task OnGet()
     {
         var user = await userAccountRepository.GetUserAccountAsync(User);
-        var query = recordRepository.GetBy(user, re => re.ReminderDate != null);
+        var query = recordRepository.GetBy(user, re => re.ReminderDate != null && !re.ReminderDone.GetValueOrDefault());
         
         if (View == "upcoming")
             query = query.Where(re => re.ReminderDate.GetValueOrDefault() <= DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1)));

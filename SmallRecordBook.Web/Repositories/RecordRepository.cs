@@ -17,7 +17,7 @@ public class RecordRepository(
     public IEnumerable<RecordEntry> GetAll(UserAccount user)
         => context.RecordEntries
             .Where(e => e.UserAccountId == user.UserAccountId && e.DeletedDateTime == null)
-            .OrderBy(e => e.EntryDate)
+            .OrderByDescending(e => e.EntryDate)
             .ThenBy(e => e.Title);
 
     public IEnumerable<RecordEntry> GetBy(UserAccount user, Func<RecordEntry, bool> condition)

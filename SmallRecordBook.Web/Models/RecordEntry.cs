@@ -15,6 +15,7 @@ public class RecordEntry
     public required string Title { get; set; }
     public string? Description { get; set; }
     public DateOnly? ReminderDate { get; set; }
+    public bool? ReminderDone { get; set; }
     public IEnumerable<RecordEntryTag>? RecordEntryTags { get; set; }
     public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
     public DateTime? LastUpdateDateTime { get; set; }

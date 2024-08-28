@@ -9,11 +9,18 @@ public static class CssExtensions
         List<string> styles = ["srb-list-item"];
         if (recordEntry.ReminderDate != null)
         {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
-            if (recordEntry.ReminderDate.Value == today)
-                styles.Add("srb-list-item-due");
-            if (recordEntry.ReminderDate.Value < today)
-                styles.Add("srb-list-item-overdue");
+            if (recordEntry.ReminderDone ?? false)
+            {
+                styles.Add("srb-list-item-done");
+            }
+            else
+            {
+                var today = DateOnly.FromDateTime(DateTime.UtcNow);
+                if (recordEntry.ReminderDate.Value == today)
+                    styles.Add("srb-list-item-due");
+                if (recordEntry.ReminderDate.Value < today)
+                    styles.Add("srb-list-item-overdue");
+            }
         }
         return string.Join(' ', styles);
     }

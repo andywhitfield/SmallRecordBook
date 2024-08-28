@@ -181,6 +181,11 @@ ul.srb-list-item {
     color: red;
 }
 
+.srb-list-item-done span.srb-reminder {
+    font-size: small;
+    font-style: oblique;
+}
+
 ul.srb-list-item>li {
     display: flex;
     background-color: #92d3d4;

@@ -15,6 +15,7 @@ public class RecordModel(ILogger<RecordModel> logger,
     [BindProperty(SupportsGet = true)] public string? Title { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? Description { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? RemindDate { get; set; } = "";
+    [BindProperty(SupportsGet = true)] public string? RemindDone { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? Tags { get; set; } = "";
     [BindProperty] public string? Delete { get; set; }
 
@@ -34,6 +35,7 @@ public class RecordModel(ILogger<RecordModel> logger,
         Title = recordEntry.Title;
         Description = recordEntry.Description;
         RemindDate = recordEntry.ReminderDate.ToDisplayString();
+        RemindDone = recordEntry.ReminderDone.GetValueOrDefault() ? "true" : "";
         Tags = string.Join(' ', recordEntry.ActiveRecordEntryTags.Select(ret => ret.Tag));
 
         return Page();
@@ -66,9 +68,10 @@ public class RecordModel(ILogger<RecordModel> logger,
         recordEntry.Title = Title;
         recordEntry.Description = Description;
         recordEntry.ReminderDate = RemindDate.ParseDateOnly(null);
+        recordEntry.ReminderDone = recordEntry.ReminderDate == null ? null : RemindDone == "true";
 
-        logger.LogDebug("Saving record entry {RecordEntryId} with entry date [{EntryDate}], title [{Title}], description [{Description}], reminder date [{RemindDate}, tags [{Tags}]",
-            recordEntry.RecordEntryId, recordEntry.EntryDate, recordEntry.Title, recordEntry.Description, recordEntry.ReminderDate, Tags);
+        logger.LogDebug("Saving record entry {RecordEntryId} with entry date [{EntryDate}], title [{Title}], description [{Description}], reminder date [{RemindDate}, reminder done [{ReminderDone}], tags [{Tags}]",
+            recordEntry.RecordEntryId, recordEntry.EntryDate, recordEntry.Title, recordEntry.Description, recordEntry.ReminderDate, recordEntry.ReminderDone, Tags);
         await recordRepository.SaveAsync(userAccount, recordEntry, Tags);
 
         return Redirect($"/record/{recordEntryId}");
