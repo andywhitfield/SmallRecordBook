@@ -9,7 +9,7 @@ public record UserNavModel(
 
     public string Css(string prop, string propVal = "") =>
         prop switch {
-            "all" when Request.Path == new PathString("/") => _selectedCssClass,
+            "all" when Request.Path == new PathString("/") && Request.Query.Count == 0 => _selectedCssClass,
             "reminders" when Request.Path.StartsWithSegments(new PathString("/reminders")) => _selectedCssClass + (OverdueReminderCount > 0 ? " srb-list-due" : ""),
             "reminders" => OverdueReminderCount > 0 ? " srb-list-due" : "",
             _ => ""
