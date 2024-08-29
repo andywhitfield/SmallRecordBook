@@ -28,7 +28,7 @@
                         @if (recordEntry.ActiveRecordEntryTags.Any()) {
                         <div class="srb-tag">
                             @foreach (var tag in recordEntry.ActiveRecordEntryTags) {
-                            <a href="/TODO">@tag.Tag</a>
+                            <a href="/?tag=@tag.Tag">@tag.Tag</a>
                             }
                         </div>
                         }

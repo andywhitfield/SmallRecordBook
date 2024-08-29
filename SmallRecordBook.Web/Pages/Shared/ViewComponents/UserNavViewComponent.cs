@@ -14,7 +14,7 @@ public class UserNavViewComponent(
         var user = await userAccountRepository.GetUserAccountAsync(UserClaimsPrincipal);
         return View(new UserNavModel(
             recordRepository.GetTags(user),
-            recordRepository.GetBy(user, re => !re.ReminderDone.GetValueOrDefault() && re.ReminderDate != null && re.ReminderDate.Value < DateOnly.FromDateTime(DateTime.UtcNow)).Count(),
+            recordRepository.GetBy(user, re => (re.ReminderDone == null || !re.ReminderDone.Value) && re.ReminderDate != null && re.ReminderDate.Value < DateOnly.FromDateTime(DateTime.UtcNow)).Count(),
             Request));
     }
 }

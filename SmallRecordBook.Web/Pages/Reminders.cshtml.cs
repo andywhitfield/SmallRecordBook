@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SmallRecordBook.Web.Models;
@@ -18,7 +19,7 @@ public class RemindersModel(
     public async Task OnGet()
     {
         var user = await userAccountRepository.GetUserAccountAsync(User);
-        var query = recordRepository.GetBy(user, re => re.ReminderDate != null && !re.ReminderDone.GetValueOrDefault());
+        var query = recordRepository.GetBy(user, re => re.ReminderDate != null && (re.ReminderDone == null || !re.ReminderDone.Value));
         
         if (View == "upcoming")
             query = query.Where(re => re.ReminderDate.GetValueOrDefault() <= DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1)));
@@ -28,6 +29,6 @@ public class RemindersModel(
         else
             query = query.OrderByDescending(re => re.ReminderDate);
 
-        RecordEntries = query;
+        RecordEntries = query.ToImmutableList();
     }
 }

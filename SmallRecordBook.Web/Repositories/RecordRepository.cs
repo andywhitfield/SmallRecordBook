@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using SmallRecordBook.Web.Models;
 
@@ -20,7 +21,7 @@ public class RecordRepository(
             .OrderByDescending(e => e.EntryDate)
             .ThenBy(e => e.Title);
 
-    public IEnumerable<RecordEntry> GetBy(UserAccount user, Func<RecordEntry, bool> condition)
+    public IEnumerable<RecordEntry> GetBy(UserAccount user, Expression<Func<RecordEntry, bool>> condition)
         => context.RecordEntries
             .Where(e => e.UserAccountId == user.UserAccountId && e.DeletedDateTime == null)
             .Where(condition);

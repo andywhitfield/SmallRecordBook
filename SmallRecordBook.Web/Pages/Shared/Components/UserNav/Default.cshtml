@@ -5,7 +5,7 @@
     <li class="@Model.Css("all")"><a href="/">All entries</a></li>
     <li class="@Model.Css("reminders")"><a href="/reminders" title="Overdue reminders: @Model.OverdueReminderCount">Reminders (@Model.OverdueReminderCount)</a></li>
     @foreach (var (tag, tagCount) in Model.Tags) {
-    <li class="@Model.Css("tag", tag)"><a href="TODO">@tag (@tagCount)</a></li>
+    <li class="@Model.Css("tag", tag)"><a href="/?tag=@tag">@tag (@tagCount)</a></li>
     }
 </ul>
 </nav>
