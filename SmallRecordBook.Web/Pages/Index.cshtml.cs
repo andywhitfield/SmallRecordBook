@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using SmallRecordBook.Web.Models;
 using SmallRecordBook.Web.Repositories;
 
@@ -14,6 +15,7 @@ public class IndexModel(
 {
     [BindProperty(SupportsGet = true)] public Guid? Link { get; set; }
     [BindProperty(SupportsGet = true)] public string? Tag { get; set; }
+    [BindProperty(SupportsGet = true)] public string? Find { get; set; }
     public IEnumerable<RecordEntry> RecordEntries { get; private set; } = [];
 
     public async Task OnGet()
@@ -31,6 +33,17 @@ public class IndexModel(
         {
             RecordEntries = recordRepository
                 .GetBy(user, re => re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && ret.Tag == Tag))
+                .OrderByDescending(e => e.EntryDate)
+                .ThenBy(e => e.Title);
+        }
+        else if (!string.IsNullOrEmpty(Find))
+        {
+            var like = $"%{Find.Trim()}%";
+            RecordEntries = recordRepository
+                .GetBy(user, re =>
+                    (re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && EF.Functions.Like(ret.Tag, like))) ||
+                    EF.Functions.Like(re.Title, like) ||
+                    (re.Description != null && EF.Functions.Like(re.Description, like)))
                 .OrderByDescending(e => e.EntryDate)
                 .ThenBy(e => e.Title);
         }

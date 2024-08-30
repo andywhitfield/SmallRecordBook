@@ -27,8 +27,15 @@
         <nav class="navbar-main">
             <div class="navbar-nav">
                 @if (UserService.IsLoggedIn) {
-                    <form method="get" action="/TODO">
-                    <span class="narrow-hide"><input type="text" name="q" placeholder="Find item..." /> <input type="submit" value="Find"/> |</span> <a href="/TODO">Profile</a> | <a href="/signout">Logout</a>
+                    <form method="get" action="/">
+                    <span class="narrow-hide">
+                        @if (Context.Request.Query.TryGetValue("find", out var findVal)) {
+                        <input type="text" name="find" placeholder="Find item..." value="@findVal" autofocus />
+                        } else {
+                        <input type="text" name="find" placeholder="Find item..." />
+                        }
+                        <input type="submit" value="Find"/> |</span>
+                    <a href="/TODO">Profile</a> | <a href="/signout">Logout</a>
                     </form>
                 }
             </div>
