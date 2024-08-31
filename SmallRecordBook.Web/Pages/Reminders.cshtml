@@ -17,6 +17,7 @@
     <span>View <a href="/reminders?view=upcoming&sort=@Model.Sort">only upcoming reminders</a>.</span>
     }    
 
+@* TODO: move this into a separate component - this block is the same as index.cshtml *@
     @if (Model.RecordEntries.Any()) {
     <ul class="srb-list">
         <li class="srb-list">
