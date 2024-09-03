@@ -6,35 +6,34 @@
 </aside>
 
 <article>
-    <form name="srb-add" method="post" action="/add">
+    <form name="srb-entry" method="post" action="/add">
     @Html.AntiForgeryToken()
     <input type="hidden" name="parent" value="@Model.Parent" />
     <fieldset>
     <legend>Add new record entry</legend>
     <div>
-        <label for="srb-add-date">Date:</label>
-        <input type="date" id="srb-add-date" name="entrydate" class="srb-add-date" value="@Model.EntryDate" />
+        <label for="srb-entry-date">Date:</label>
+        <input type="text" id="srb-entry-date" name="entrydate" class="srb-entry-date" value="@Model.EntryDate" />
     </div>
     <div>
-        <label for="srb-add-title">Title:</label>
-        <input type="text" id="srb-add-title" name="title" class="srb-add-title" autofocus value="@Model.Title" />
+        <label for="srb-entry-title">Title:</label>
+        <input type="text" id="srb-entry-title" name="title" class="srb-entry-title" autofocus value="@Model.Title" />
     </div>
     <div>
-        <label for="srb-add-description">Description:</label>
-        <textarea id="srb-add-description" name="description" class="srb-add-description" wrap="off">@Model.Description</textarea>
+        <label for="srb-entry-description">Description:</label>
+        <textarea id="srb-entry-description" name="description" class="srb-entry-description" wrap="off">@Model.Description</textarea>
     </div>
     <div>
-        <label for="srb-add-reminddate">Remind me:</label>
-        In a week / month / year selector?
-        Or on date: <input type="date" id="srb-add-reminddate" name="reminddate" class="srb-add-reminddate" value="@Model.RemindDate" />
+        <label for="srb-entry-reminddate">Remind me:</label>
+        <input type="text" id="srb-entry-reminddate" name="reminddate" class="srb-entry-reminddate" value="@Model.RemindDate" />
     </div>
     <div>
-        <label for="srb-add-tags">Tags:</label>
-        <input type="text" id="srb-add-tags" name="tags" class="srb-add-tags" value="@Model.Tags" />
+        <label for="srb-entry-tags">Tags:</label>
+        <input type="text" id="srb-entry-tags" name="tags" class="srb-entry-tags" value="@Model.Tags" />
     </div>
     <div>
         <label></label>
-        <button type="submit" data-depends="input.srb-add-title">Add</button>
+        <button type="submit" data-depends="input.srb-entry-title">Add</button>
         @if (Model.Parent != null)
         {
         <button type="submit" name="cancel" value="cancel">Cancel</button>
@@ -43,3 +42,20 @@
     </fieldset>
     </form>
 </article>
+
+@section Scripts {
+<script type="text/javascript">
+const entryDatepicker = new TheDatepicker.Datepicker(document.getElementById('srb-entry-date'));
+entryDatepicker.options.setTitle('Record date');
+entryDatepicker.options.classNames.setClassName(TheDatepicker.ClassNameType.HeaderTitleContent, "srb-entry-datepicker-title");
+entryDatepicker.options.setInputFormat('Y-m-d');
+entryDatepicker.options.setAllowEmpty(false);
+entryDatepicker.render();
+
+const remindDatepicker = new TheDatepicker.Datepicker(document.getElementById('srb-entry-reminddate'));
+remindDatepicker.options.setTitle('Reminder date');
+remindDatepicker.options.classNames.setClassName(TheDatepicker.ClassNameType.HeaderTitleContent, "srb-entry-datepicker-title");
+remindDatepicker.options.setInputFormat('Y-m-d');
+remindDatepicker.render();
+</script>
+}

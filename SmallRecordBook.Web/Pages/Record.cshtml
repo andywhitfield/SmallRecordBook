@@ -6,51 +6,67 @@
 </aside>
 
 <article>
-    <form name="srb-record" method="post" action="/record/@Model.EntryId">
+    <form name="srb-entry" method="post" action="/record/@Model.EntryId">
     @Html.AntiForgeryToken()
     <fieldset>
     <legend>Record entry</legend>
     <div>
-        <label for="srb-record-date">Date:</label>
-        <input type="date" id="srb-record-date" name="entrydate" class="srb-record-date" value="@Model.EntryDate" />
+        <label for="srb-entry-date">Date:</label>
+        <input type="text" id="srb-entry-date" name="entrydate" class="srb-entry-date" value="@Model.EntryDate" />
     </div>
     <div>
-        <label for="srb-record-title">Title:</label>
-        <input type="text" id="srb-record-title" name="title" class="srb-record-title" value="@Model.Title" />
+        <label for="srb-entry-title">Title:</label>
+        <input type="text" id="srb-entry-title" name="title" class="srb-entry-title" value="@Model.Title" />
     </div>
     <div>
-        <label for="srb-record-description">Description:</label>
-        <textarea id="srb-record-description" name="description" class="srb-record-description" wrap="off">@Model.Description</textarea>
+        <label for="srb-entry-description">Description:</label>
+        <textarea id="srb-entry-description" name="description" class="srb-entry-description" wrap="off">@Model.Description</textarea>
     </div>
     <div>
-        <label for="srb-record-reminddate">Remind me:</label>
-        In a week / month / year selector?
-        Or on date: <input type="date" id="srb-record-reminddate" name="reminddate" class="srb-record-reminddate" value="@Model.RemindDate" />
+        <label for="srb-entry-reminddate">Remind me:</label>
+        <input type="text" id="srb-entry-reminddate" name="reminddate" class="srb-entry-reminddate" value="@Model.RemindDate" />
     </div>
     <div>
-        <label for="srb-record-reminddone">Completed reminder:</label>
+        <label for="srb-entry-reminddone">Completed reminder:</label>
         @if (Model.RemindDone == "true") {
-        <input type="checkbox" checked="checked" id="srb-record-reminddone" name="reminddone" class="srb-record-reminddone" value="true" />
+        <input type="checkbox" checked="checked" id="srb-entry-reminddone" name="reminddone" class="srb-entry-reminddone" value="true" />
         } else {
-        <input type="checkbox" id="srb-record-reminddone" name="reminddone" class="srb-record-reminddone" value="true" />
+        <input type="checkbox" id="srb-entry-reminddone" name="reminddone" class="srb-entry-reminddone" value="true" />
         }
     </div>
     <div>
-        <label for="srb-record-tags">Tags:</label>
-        <input type="text" id="srb-record-tags" name="tags" class="srb-record-tags" value="@Model.Tags" />
+        <label for="srb-entry-tags">Tags:</label>
+        <input type="text" id="srb-entry-tags" name="tags" class="srb-entry-tags" value="@Model.Tags" />
     </div>
     @if (Model.LinkReference != null) {
     <div>
-        <label for="srb-record-links">References:</label>
+        <label for="srb-entry-links">References:</label>
         <a href="/?link=@Model.LinkReference">View all linked entries</a>
     </div>
     }
     <div>
         <label></label>
-        <button type="submit" data-depends="input.srb-record-title">Save</button>
+        <button type="submit" data-depends="input.srb-entry-title">Save</button>
         <button type="submit" name="delete" value="delete" data-confirm="Are you sure you want to delete this RecordBook entry?">Delete</button>
         <button type="submit" name="addanother" value="addanother">Add another...</button>
     </div>
     </fieldset>
     </form>
 </article>
+
+@section Scripts {
+<script type="text/javascript">
+const entryDatepicker = new TheDatepicker.Datepicker(document.getElementById('srb-entry-date'));
+entryDatepicker.options.setTitle('Record date');
+entryDatepicker.options.classNames.setClassName(TheDatepicker.ClassNameType.HeaderTitleContent, "srb-entry-datepicker-title");
+entryDatepicker.options.setInputFormat('Y-m-d');
+entryDatepicker.options.setAllowEmpty(false);
+entryDatepicker.render();
+
+const remindDatepicker = new TheDatepicker.Datepicker(document.getElementById('srb-entry-reminddate'));
+remindDatepicker.options.setTitle('Reminder date');
+remindDatepicker.options.classNames.setClassName(TheDatepicker.ClassNameType.HeaderTitleContent, "srb-entry-datepicker-title");
+remindDatepicker.options.setInputFormat('Y-m-d');
+remindDatepicker.render();
+</script>
+}

@@ -209,12 +209,6 @@ ul.srb-list-item>li>div {
     padding: 0 10px 0 0;
 }
 
-.srb-list-item-notes {
-    margin-top: 2px;
-    font-size: 11pt;
-    white-space: pre-line;
-}
-
 div.srb-list-item-entry>div:first-child {
     font-weight: bold;
 }
@@ -228,23 +222,29 @@ li.srb-list-item:hover {
     border-color: #b100ff;
 }
 
-form[name="srb-list-add"] label {
+form[name="srb-entry"] label {
     width: 105px;
     display: inline-block;
     vertical-align: top;
 }
 
-input.srb-list-add-description {
+input.srb-entry-date,
+input.srb-entry-reminddate {
+    width: 110px;
+}
+
+input.srb-entry-title,
+input.srb-entry-tags {
     width: 300px;
 }
 
-textarea.srb-list-add-notes {
+textarea.srb-entry-description {
     width: 300px;
     height: 60px;
 }
 
-input.srb-list-add-due {
-    width: 110px;
+.the-datepicker__srb-entry-datepicker-title {
+    color: black;
 }
 
 div.srb-tag {

@@ -33,8 +33,8 @@ public class AddModel(ILogger<AddModel> logger,
                 Title = recordEntry.Title;
                 Description = recordEntry.Description;
                 Tags = recordEntry.TagString();
-                // TODO: be nice to add a reminder too, if the parent has one
-                // perhaps once we support reminders like '1 month' / '1 year' then re-visit this
+                if (recordEntry.ReminderDate != null)
+                    RemindDate = EntryDate.ParseDateOnly().AddDays(Math.Abs(recordEntry.ReminderDate.Value.DayNumber - recordEntry.EntryDate.DayNumber)).ToString("yyyy-MM-dd");
             }
         }
     }
