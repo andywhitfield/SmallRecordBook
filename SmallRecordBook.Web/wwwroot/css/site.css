@@ -221,6 +221,7 @@ div.srb-list-item-entry>div:first-child {
 
 div.srb-list-item-entry>div:nth-child(3) {
     font-size: smaller;
+    white-space: pre-line;
 }
 
 li.srb-list-item:hover {

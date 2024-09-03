@@ -14,9 +14,7 @@
                     <div>
                         @recordEntry.Title
                     </div>
-                    <div>
-                        @recordEntry.Description
-                    </div>
+                    <div>@recordEntry.Description</div>
                     @if (recordEntry.ActiveRecordEntryTags.Any()) {
                     <div class="srb-tag">
                         @foreach (var tag in recordEntry.ActiveRecordEntryTags) {
