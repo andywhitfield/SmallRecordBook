@@ -286,6 +286,12 @@ article {
     background-color: white;
 }
 
+article a,
+article a:link,
+article a:visited {
+    color: black;
+}
+
 footer {
     border-top: solid #b100ff 1px;
     padding: 10px;
@@ -349,6 +355,12 @@ ul.srb-list li.placeholder:before {
 
     article {
         background-color: black;
+        color: white;
+    }
+
+    article a,
+    article a:link,
+    article a:visited {
         color: white;
     }
 
