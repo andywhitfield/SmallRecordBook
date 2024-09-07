@@ -13,4 +13,8 @@ public interface IUserAccountRepository
     IAsyncEnumerable<UserAccountCredential> GetUserAccountCredentialsAsync(UserAccount user);
     Task<UserAccountCredential?> GetUserAccountCredentialsByUserHandleAsync(byte[] userHandle);
     Task SetSignatureCountAsync(UserAccountCredential userAccountCredential, uint signatureCount);
+    Task<string?> GetUserAccountSettingAsync(UserAccount userAccount, string settingName);
+    Task<string> GetUserAccountSettingOrDefaultAsync(UserAccount userAccount, string settingName, string defaultValue);
+    Task SetUserAccountSettingAsync(UserAccount userAccount, string settingName, string settingValue);
+    Task RemoveUserAccountSettingAsync(UserAccount userAccount, string settingName);
 }

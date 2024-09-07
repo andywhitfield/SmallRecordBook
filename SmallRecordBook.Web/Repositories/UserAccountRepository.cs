@@ -55,4 +55,53 @@ public class UserAccountRepository(ILogger<UserAccountRepository> logger, Sqlite
         userAccountCredential.SignatureCount = signatureCount;
         return context.SaveChangesAsync();
     }
+
+    public async Task<string?> GetUserAccountSettingAsync(UserAccount userAccount, string settingName)
+        => (await context.UserAccountSettings.FirstOrDefaultAsync(uas =>
+                uas.UserAccountId == userAccount.UserAccountId &&
+                uas.SettingName == settingName &&
+                uas.DeletedDateTime == null
+            ))?.SettingValue;
+
+    public async Task<string> GetUserAccountSettingOrDefaultAsync(UserAccount userAccount, string settingName, string defaultValue)
+        => await GetUserAccountSettingAsync(userAccount, settingName) ?? defaultValue;
+
+    public async Task SetUserAccountSettingAsync(UserAccount userAccount, string settingName, string settingValue)
+    {
+        var existingSetting = await context.UserAccountSettings.FirstOrDefaultAsync(uas =>
+            uas.UserAccountId == userAccount.UserAccountId &&
+            uas.SettingName == settingName &&
+            uas.DeletedDateTime == null
+        );
+
+        if (existingSetting == null)
+        {
+            context.UserAccountSettings.Add(new()
+            {
+                UserAccount = userAccount,
+                SettingName = settingName,
+                SettingValue = settingValue
+            });
+        }
+        else
+        {
+            existingSetting.SettingValue = settingValue;
+            existingSetting.LastUpdateDateTime = DateTime.UtcNow;
+        }
+
+        await context.SaveChangesAsync();
+    }
+
+    public async Task RemoveUserAccountSettingAsync(UserAccount userAccount, string settingName)
+    {
+        foreach (var setting in context.UserAccountSettings.Where(uas =>
+            uas.UserAccountId == userAccount.UserAccountId &&
+            uas.SettingName == settingName &&
+            uas.DeletedDateTime == null))
+        {
+            setting.DeletedDateTime = DateTime.UtcNow;
+        }
+        
+        await context.SaveChangesAsync();
+    }
 }

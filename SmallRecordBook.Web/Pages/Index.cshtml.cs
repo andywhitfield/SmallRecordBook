@@ -16,11 +16,17 @@ public class IndexModel(
     [BindProperty(SupportsGet = true)] public Guid? Link { get; set; }
     [BindProperty(SupportsGet = true)] public string? Tag { get; set; }
     [BindProperty(SupportsGet = true)] public string? Find { get; set; }
+    [BindProperty(SupportsGet = true)] public string? View { get; set; }
     public IEnumerable<RecordEntry> RecordEntries { get; private set; } = [];
 
     public async Task OnGet()
     {
         var user = await userAccountRepository.GetUserAccountAsync(User);
+
+        if (View != null)
+            await userAccountRepository.SetUserAccountSettingAsync(user, UserAccountSetting.ViewListOrCalendar, View);
+        else
+            View = await userAccountRepository.GetUserAccountSettingOrDefaultAsync(user, UserAccountSetting.ViewListOrCalendar, "");
 
         if (Link != null)
         {
