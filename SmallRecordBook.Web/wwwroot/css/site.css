@@ -56,6 +56,28 @@ button {
     margin-bottom: 2px;
 }
 
+dialog {
+    padding: 5px;
+    border-width: 1px;
+    border-color: #b100ff;
+    background-color: #92d3d4;
+}
+
+dialog a,
+dialog a:link,
+dialog a:visited {
+    color: black;
+}
+
+dialog>div>div:nth-child(1) {
+    font-weight: bold;
+}
+
+dialog>div>div:nth-child(3) {
+    font-size: smaller;
+    white-space: pre-line;
+}
+
 nav.navbar-header {
     min-width: 260px;
     -webkit-flex: 0;
@@ -323,6 +345,10 @@ ul.srb-list li.placeholder:before {
 
 .srb-list-item-drag-handle {
     cursor: move;
+}
+
+#cal-date {
+    font-size: larger;
 }
 
 :root {

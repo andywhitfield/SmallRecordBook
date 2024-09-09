@@ -16,11 +16,11 @@
     </div>
 
     @if (Model.View == "calendar") {
+    <button id="cal-prev-year" title="Previous year">&nbsp;&laquo;&nbsp;</button>
+    <button id="cal-prev-month" title="Previous month">&nbsp;&nbsp;&lsaquo;&nbsp;&nbsp;</button>
     <button id="cal-today">Today</button>
-    <button id="cal-prev-year">Previous Year</button>
-    <button id="cal-prev-month">Previous Month</button>
-    <button id="cal-next-month">Next Month</button>
-    <button id="cal-next-year">Next Year</button>
+    <button id="cal-next-month" title="Next month">&nbsp;&nbsp;&rsaquo;&nbsp;&nbsp;</button>
+    <button id="cal-next-year" title="Next year">&nbsp;&raquo;&nbsp;</button>
     <div id="cal-date"></div>
     <div id="calendar"></div>
     } else {
@@ -28,18 +28,57 @@
     }
 </article>
 
+@if (Model.View == "calendar") {
+Model.ViewData[nameof(Model.RecordEntries)] = Model.RecordEntries.ToList();
+<dialog id="srb-event-details-dialog">
+    <div id="srb-event-details"></div>
+    <button id="srb-event-details-dialog-close">Close</button>
+</dialog>
+
+@foreach (var recordEntry in (Model.ViewData[nameof(Model.RecordEntries)] as IEnumerable<Models.RecordEntry> ?? [])) {
+<template data-type="record-entry" data-id="@recordEntry.RecordEntryId">
+    <div><a href="/record/@recordEntry.RecordEntryId">@recordEntry.EntryDate.ToString("dddd dd MMMM yyyy")</a></div>
+    <div>@recordEntry.Title</div>
+    <div>@recordEntry.Description</div>
+    <div class="srb-tag">
+        @foreach (var tag in recordEntry.ActiveRecordEntryTags) {
+        <a href="/?tag=@tag.Tag">@tag.Tag</a>
+        }
+    </div>
+    <div class="@recordEntry.ListItemCss()">
+        @if (recordEntry.ReminderDate != null) {
+        <span class="srb-reminder">Reminder set for @recordEntry.ReminderDate.Value.ToString("dddd dd MMMM yyyy")</span>
+        }
+    </div>
+</template>
+}
+}
+
 @section Scripts {
 @if (Model.View == "calendar") {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" integrity="sha256-ZztCtsADLKbUFK/X6nOYnJr0eelmV2X3dhLDB/JK6fM=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 $(function() {
+    $('#srb-event-details-dialog-close').click(function() {
+        $('#srb-event-details-dialog')[0].close();
+    });
+
     var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
         headerToolbar: false,
-        events: [
-            { id: 'r1', title: 'record event 1', start: '2024-09-04', allDay: true }
-        ]
+        eventClick: function(info) {
+            var template = document.importNode($('template[data-type="record-entry"][data-id='+info.event.id+']')[0].content, true);;
+            var dialogDetails = $('#srb-event-details');
+            dialogDetails.empty();
+            dialogDetails.append(template);
+            $('#srb-event-details-dialog')[0].showModal();
+        }
     });
+    @foreach (var recordEntry in (Model.ViewData[nameof(Model.RecordEntries)] as IEnumerable<Models.RecordEntry> ?? [])) {
+    <text>
+    calendar.addEvent({ id: '@recordEntry.RecordEntryId', title: '@recordEntry.Title', start: '@recordEntry.EntryDate.ToString("yyyy-MM-dd")', allDay: true });
+    </text>
+    }
     calendar.render();
     function onDateChange() { $('#cal-date').text(calendar.getDate().toLocaleDateString(undefined, { year: 'numeric', month: 'long' })); }
 
