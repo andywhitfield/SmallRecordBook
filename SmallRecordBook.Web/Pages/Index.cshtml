@@ -73,11 +73,14 @@ $(function() {
             dialogDetails.empty();
             dialogDetails.append(template);
             $('#srb-event-details-dialog')[0].showModal();
+        },
+        eventContent: function(event) {
+            return { html: '<span class="srb-event-title">' + event.event.title + '</span>' };
         }
     });
     @foreach (var recordEntry in (Model.ViewData[nameof(Model.RecordEntries)] as IEnumerable<Models.RecordEntry> ?? [])) {
     <text>
-    calendar.addEvent({ id: '@recordEntry.RecordEntryId', title: '@recordEntry.Title', start: '@recordEntry.EntryDate.ToString("yyyy-MM-dd")', allDay: true });
+    calendar.addEvent({ id: '@recordEntry.RecordEntryId', title: '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(recordEntry.Title))', start: '@recordEntry.EntryDate.ToString("yyyy-MM-dd")', allDay: true });
     </text>
     }
     calendar.render();

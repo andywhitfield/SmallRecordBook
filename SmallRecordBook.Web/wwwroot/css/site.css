@@ -357,6 +357,10 @@ ul.srb-list li.placeholder:before {
     --fc-event-border-color: white;
 }
 
+.srb-event-title {
+    white-space: wrap;
+}
+
 @media (max-width: 600px) {
     header {
         -webkit-flex-direction: column;
