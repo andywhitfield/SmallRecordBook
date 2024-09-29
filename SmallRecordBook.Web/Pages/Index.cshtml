@@ -71,6 +71,9 @@ $(function() {
         $('#srb-event-details-dialog')[0].close();
     });
 
+    const firstOfMonth = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), 1));
+    const datesLoaded = new Set();
+
     var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
         headerToolbar: false,
@@ -85,13 +88,32 @@ $(function() {
             return { html: '<span class="srb-event-title">' + event.event.title + '</span>' };
         }
     });
-    @foreach (var recordEntry in (Model.ViewData[nameof(Model.RecordEntries)] as IEnumerable<Models.RecordEntry> ?? [])) {
-    <text>
-    calendar.addEvent({ id: '@recordEntry.RecordEntryId', title: '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(recordEntry.Title))', start: '@recordEntry.EntryDate.ToString("yyyy-MM-dd")', allDay: true });
-    </text>
-    }
     calendar.render();
-    function onDateChange() { $('#cal-date').text(calendar.getDate().toLocaleDateString(undefined, { year: 'numeric', month: 'long' })); }
+    function onDateChange() {
+        $('#cal-date').text(calendar.getDate().toLocaleDateString(undefined, { year: 'numeric', month: 'long' }));
+        const calendarMonth = new Date(Date.UTC(calendar.getDate().getFullYear(), calendar.getDate().getMonth(), 1));
+        if (datesLoaded.has(calendarMonth.getTime())) {
+            console.log('calendar events already loaded for date ' + calendarMonth + ', nothing to do');
+        } else {
+            console.log('calendar events not loaded for date ' + calendarMonth + ', loading...');
+            $.getJSON('/api/calendar/recordentries?date='+encodeURIComponent(calendarMonth.toISOString()))
+                .done(function(data) {
+                    console.log('calendar record entries retrieved...adding to calendar');
+                    data.forEach(function(re) {
+                        if (!calendar.getEventById(re.recordEntryId))
+                            calendar.addEvent({ id: re.recordEntryId, title: re.title, start: re.entryDate, allDay: true });
+                        else
+                            console.log('event ' + re.recordEntryId + ' already in calendar, not adding again');
+                    });
+                    // TODO create template? or perhaps this could/should be done on the fly?
+                    datesLoaded.add(calendarMonth.getTime());
+                })
+                .fail(function() {
+                    // TODO: should do something here!
+                    console.log('failed getting record entries');
+                });
+        }
+    }
 
     onDateChange();
     $('#cal-today').click(function() { calendar.today(); onDateChange(); });

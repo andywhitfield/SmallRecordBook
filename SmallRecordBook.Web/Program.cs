@@ -12,6 +12,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/signinverify");
     options.Conventions.AllowAnonymousToPage("/signout");
 });
+builder.Services.AddControllers();
 builder.Services.AddDbContext<SqliteDataContext>((serviceProvider, options) =>
 {
     var sqliteConnectionString = builder.Configuration.GetConnectionString("SmallRecordBook");
@@ -74,6 +75,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 app.MapRazorPages();
+app.MapControllers();
 
 using (var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
     scope.ServiceProvider.GetRequiredService<ISqliteDataContext>().Migrate();

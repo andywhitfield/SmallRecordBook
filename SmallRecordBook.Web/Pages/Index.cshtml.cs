@@ -53,8 +53,9 @@ public class IndexModel(
                 .OrderByDescending(e => e.EntryDate)
                 .ThenBy(e => e.Title);
         }
-        else
+        else if (View != "calendar") // the calendar view is populated dynamically / via the CalendarController api call
         {
+            // TODO: pagination
             RecordEntries = recordRepository.GetAll(user);
         }
 
