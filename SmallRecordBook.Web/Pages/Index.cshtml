@@ -25,7 +25,14 @@
     <div id="cal-date"></div>
     <div id="calendar"></div>
     } else {
-    <vc:record-entry-list record-entries="@Model.RecordEntries" />
+        string noEntriesMessage;
+        if (!string.IsNullOrEmpty(Model.Tag))
+            noEntriesMessage = "No entries with tag " + Model.Tag;
+        else if (!string.IsNullOrEmpty(Model.Find))
+            noEntriesMessage = "No entries containing " + Model.Find;
+        else
+            noEntriesMessage = "There are no entries";
+        <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@noEntriesMessage" />
     }
 </article>
 
