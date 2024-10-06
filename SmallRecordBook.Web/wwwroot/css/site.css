@@ -361,6 +361,15 @@ ul.srb-list li.placeholder:before {
     white-space: wrap;
 }
 
+.srb-cal-count {
+    min-width: 42px;
+    display: inline-block;
+}
+
+.srb-cal-count-next {
+    text-align: right;
+}
+
 @media (max-width: 600px) {
     header {
         -webkit-flex-direction: column;

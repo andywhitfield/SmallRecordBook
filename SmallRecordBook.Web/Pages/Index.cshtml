@@ -16,10 +16,11 @@
     </div>
 
     @if (Model.View == "calendar") {
-    // TODO: show the number of entries prior to, and after, the current month
     <button id="cal-prev-year" title="Previous year">&nbsp;&laquo;&nbsp;</button>
     <button id="cal-prev-month" title="Previous month">&nbsp;&nbsp;&lsaquo;&nbsp;&nbsp;</button>
-    <button id="cal-today">Today</button>
+    <span id="cal-count-prev" class="srb-cal-count srb-cal-count-prev" title="Number of events earlier than this month">(0)</span>
+    <button id="cal-today" title="Go to the current month">Today</button>
+    <span id="cal-count-next" class="srb-cal-count srb-cal-count-next" title="Number of events later than this month">(0)</span>
     <button id="cal-next-month" title="Next month">&nbsp;&nbsp;&rsaquo;&nbsp;&nbsp;</button>
     <button id="cal-next-year" title="Next year">&nbsp;&raquo;&nbsp;</button>
     <div id="cal-date"></div>
@@ -97,7 +98,7 @@ $(function() {
         $('#cal-date').text(calendar.getDate().toLocaleDateString(undefined, { year: 'numeric', month: 'long' }));
         const calendarMonth = new Date(Date.UTC(calendar.getDate().getFullYear(), calendar.getDate().getMonth(), 1));
         if (datesLoaded.has(calendarMonth.getTime())) {
-            console.log('calendar events already loaded for date ' + calendarMonth + ', nothing to do');
+            console.log('calendar events already loaded for date ' + calendarMonth + ', no need to load events');
         } else {
             console.log('calendar events not loaded for date ' + calendarMonth + ', loading...');
             $.getJSON('/api/calendar/recordentries?date='+encodeURIComponent(calendarMonth.toISOString()))
@@ -116,6 +117,18 @@ $(function() {
                     console.log('failed getting record entries');
                 });
         }
+        console.log('loading event counts...');
+        $.getJSON('/api/calendar/recordentrycounts?date='+encodeURIComponent(calendarMonth.toISOString()))
+            .done(function(data) {
+                console.log('event counts loaded');
+                $('#cal-count-prev').text('('+data.eventCountBeforeCurrentMonth+')');
+                $('#cal-count-next').text('('+data.eventCountAfterCurrentMonth+')');
+            })
+            .fail(function() {
+                console.log('failed getting event counts, resetting to zero');
+                $('#cal-count-prev').text('(0)');
+                $('#cal-count-next').text('(0)');
+            });
     }
 
     onDateChange();

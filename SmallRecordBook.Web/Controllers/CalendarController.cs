@@ -28,4 +28,16 @@ public class CalendarController(ILogger<CalendarController> logger, IUserAccount
                 re.Title, re.Description, re.ActiveRecordEntryTags.Select(t => t.Tag),
                 re.ReminderDate, re.ReminderDate?.ToString("dddd dd MMMM yyyy"), re.ListItemCss()));
     }
+
+    [HttpGet("recordentrycounts")]
+    public async Task<RecordEntryApiCountsModel> GetRecordEntryCounts([FromQuery] DateTime date)
+    {
+        DateOnly dateMonth = new(date.Year, date.Month, 1);
+        DateOnly nextDateMonth = dateMonth.AddMonths(1);
+        logger.LogInformation("Getting record entry counts for {Date}", date);
+        var user = await userAccountRepository.GetUserAccountAsync(User);
+        return new(
+            recordRepository.GetBy(user, re => re.EntryDate < dateMonth).Count(),
+            recordRepository.GetBy(user, re => re.EntryDate >= nextDateMonth).Count());
+    }
 }
