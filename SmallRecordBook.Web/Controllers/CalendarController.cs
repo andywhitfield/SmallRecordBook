@@ -26,6 +26,6 @@ public class CalendarController(ILogger<CalendarController> logger, IUserAccount
             .Select(re => new RecordEntryApiModel(
                 re.RecordEntryId, re.EntryDate, re.EntryDate.ToString("dddd dd MMMM yyyy"),
                 re.Title, re.Description, re.ActiveRecordEntryTags.Select(t => t.Tag),
-                re.ReminderDate, re.ListItemCss()));
+                re.ReminderDate, re.ReminderDate?.ToString("dddd dd MMMM yyyy"), re.ListItemCss()));
     }
 }

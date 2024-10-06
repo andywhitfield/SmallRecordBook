@@ -43,23 +43,13 @@ Model.ViewData[nameof(Model.RecordEntries)] = Model.RecordEntries.ToList();
     <button id="srb-event-details-dialog-close">Close</button>
 </dialog>
 
-@foreach (var recordEntry in (Model.ViewData[nameof(Model.RecordEntries)] as IEnumerable<Models.RecordEntry> ?? [])) {
-<template data-type="record-entry" data-id="@recordEntry.RecordEntryId">
-    <div><a href="/record/@recordEntry.RecordEntryId">@recordEntry.EntryDate.ToString("dddd dd MMMM yyyy")</a></div>
-    <div>@recordEntry.Title</div>
-    <div>@recordEntry.Description</div>
-    <div class="srb-tag">
-        @foreach (var tag in recordEntry.ActiveRecordEntryTags) {
-        <a href="/?tag=@tag.Tag">@tag.Tag</a>
-        }
-    </div>
-    <div class="@recordEntry.ListItemCss()">
-        @if (recordEntry.ReminderDate != null) {
-        <span class="srb-reminder">Reminder set for @recordEntry.ReminderDate.Value.ToString("dddd dd MMMM yyyy")</span>
-        }
-    </div>
+<template id="srb-event-template">
+    <div><a href="#" data-id="date">entry date</a></div>
+    <div data-id="title">title</div>
+    <div data-id="description">description</div>
+    <div data-id="tags" class="srb-tag"></div>
+    <div data-id="itemcss"><span class="srb-reminder"></span></div>
 </template>
-}
 }
 
 @section Scripts {
@@ -78,7 +68,21 @@ $(function() {
         initialView: 'dayGridMonth',
         headerToolbar: false,
         eventClick: function(info) {
-            var template = document.importNode($('template[data-type="record-entry"][data-id='+info.event.id+']')[0].content, true);;
+            var templateContent = $('#srb-event-template').clone();
+            templateContent.prop('id', self.crypto.randomUUID());
+            var template = document.importNode(templateContent[0].content, true);
+            var templateJQ = $(template);
+            $('[data-id="date"]', templateJQ).text(info.event.extendedProps.record.entryDateDesc);
+            $('[data-id="date"]', templateJQ).prop('href', '/record/'+info.event.extendedProps.record.recordEntryId);
+            $('[data-id="title"]', templateJQ).text(info.event.extendedProps.record.title);
+            $('[data-id="description"]', templateJQ).text(info.event.extendedProps.record.description);
+            for (const tag of info.event.extendedProps.record.tags) {
+                $('[data-id="tags"]', templateJQ).append($('<a href="/?tag='+encodeURIComponent(tag)+'">'+tag+'</a>')).append(' ');
+            }
+            if (info.event.extendedProps.record.itemCss)
+                $('[data-id="itemcss"]', templateJQ).addClass(info.event.extendedProps.record.itemCss);
+            if (info.event.extendedProps.record.reminderDateDesc)
+                $('[data-id="itemcss"] > span', templateJQ).text('Reminder set for '+info.event.extendedProps.record.reminderDateDesc);
             var dialogDetails = $('#srb-event-details');
             dialogDetails.empty();
             dialogDetails.append(template);
@@ -101,11 +105,10 @@ $(function() {
                     console.log('calendar record entries retrieved...adding to calendar');
                     data.forEach(function(re) {
                         if (!calendar.getEventById(re.recordEntryId))
-                            calendar.addEvent({ id: re.recordEntryId, title: re.title, start: re.entryDate, allDay: true });
+                            calendar.addEvent({ id: re.recordEntryId, title: re.title, start: re.entryDate, allDay: true, extendedProps: { record: re } });
                         else
                             console.log('event ' + re.recordEntryId + ' already in calendar, not adding again');
                     });
-                    // TODO create template? or perhaps this could/should be done on the fly?
                     datesLoaded.add(calendarMonth.getTime());
                 })
                 .fail(function() {
