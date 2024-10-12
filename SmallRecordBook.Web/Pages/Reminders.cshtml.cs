@@ -22,7 +22,7 @@ public class RemindersModel(
         var query = recordRepository.GetBy(user, re => re.ReminderDate != null && (re.ReminderDone == null || !re.ReminderDone.Value));
         
         if (View == "upcoming")
-            query = query.Where(re => re.ReminderDate.GetValueOrDefault() <= DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1)));
+            query = query.Where(re => re.ReminderDate <= DateOnly.FromDateTime(DateTime.Today.AddMonths(1)));
         
         if (Sort == "bydatedesc")
             query = query.OrderBy(re => re.ReminderDate);

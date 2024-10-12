@@ -28,35 +28,38 @@ public class IndexModel(
         else
             View = await userAccountRepository.GetUserAccountSettingOrDefaultAsync(user, UserAccountSetting.ViewListOrCalendar, "");
 
-        if (Link != null)
+        if (View != "calendar") // the calendar view is populated dynamically / via the CalendarController api call
         {
-            RecordEntries = recordRepository
-                .GetBy(user, re => re.LinkReference == Link)
-                .OrderByDescending(e => e.EntryDate)
-                .ThenBy(e => e.Title);
-        }
-        else if (!string.IsNullOrEmpty(Tag))
-        {
-            RecordEntries = recordRepository
-                .GetBy(user, re => re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && ret.Tag == Tag))
-                .OrderByDescending(e => e.EntryDate)
-                .ThenBy(e => e.Title);
-        }
-        else if (!string.IsNullOrEmpty(Find))
-        {
-            var like = $"%{Find.Trim()}%";
-            RecordEntries = recordRepository
-                .GetBy(user, re =>
-                    (re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && EF.Functions.Like(ret.Tag, like))) ||
-                    EF.Functions.Like(re.Title, like) ||
-                    (re.Description != null && EF.Functions.Like(re.Description, like)))
-                .OrderByDescending(e => e.EntryDate)
-                .ThenBy(e => e.Title);
-        }
-        else if (View != "calendar") // the calendar view is populated dynamically / via the CalendarController api call
-        {
-            // TODO: pagination
-            RecordEntries = recordRepository.GetAll(user);
+            if (Link != null)
+            {
+                RecordEntries = recordRepository
+                    .GetBy(user, re => re.LinkReference == Link)
+                    .OrderByDescending(e => e.EntryDate)
+                    .ThenBy(e => e.Title);
+            }
+            else if (!string.IsNullOrEmpty(Tag))
+            {
+                RecordEntries = recordRepository
+                    .GetBy(user, re => re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && ret.Tag == Tag))
+                    .OrderByDescending(e => e.EntryDate)
+                    .ThenBy(e => e.Title);
+            }
+            else if (!string.IsNullOrEmpty(Find))
+            {
+                var like = $"%{Find.Trim()}%";
+                RecordEntries = recordRepository
+                    .GetBy(user, re =>
+                        (re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && EF.Functions.Like(ret.Tag, like))) ||
+                        EF.Functions.Like(re.Title, like) ||
+                        (re.Description != null && EF.Functions.Like(re.Description, like)))
+                    .OrderByDescending(e => e.EntryDate)
+                    .ThenBy(e => e.Title);
+            }
+            else
+            {
+                // TODO: pagination
+                RecordEntries = recordRepository.GetAll(user);
+            }
         }
 
         RecordEntries = RecordEntries.ToImmutableList();

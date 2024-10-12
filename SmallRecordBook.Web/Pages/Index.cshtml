@@ -38,7 +38,6 @@
 </article>
 
 @if (Model.View == "calendar") {
-Model.ViewData[nameof(Model.RecordEntries)] = Model.RecordEntries.ToList();
 <dialog id="srb-event-details-dialog">
     <div id="srb-event-details"></div>
     <button id="srb-event-details-dialog-close">Close</button>
@@ -101,7 +100,7 @@ $(function() {
             console.log('calendar events already loaded for date ' + calendarMonth + ', no need to load events');
         } else {
             console.log('calendar events not loaded for date ' + calendarMonth + ', loading...');
-            $.getJSON('/api/calendar/recordentries?date='+encodeURIComponent(calendarMonth.toISOString()))
+            $.getJSON('/api/calendar/recordentries?tag=@Model.Tag&link=@Model.Link&find=@Model.Find&date='+encodeURIComponent(calendarMonth.toISOString()))
                 .done(function(data) {
                     console.log('calendar record entries retrieved...adding to calendar');
                     data.forEach(function(re) {
@@ -118,7 +117,7 @@ $(function() {
                 });
         }
         console.log('loading event counts...');
-        $.getJSON('/api/calendar/recordentrycounts?date='+encodeURIComponent(calendarMonth.toISOString()))
+        $.getJSON('/api/calendar/recordentrycounts?tag=@Model.Tag&link=@Model.Link&find=@Model.Find&date='+encodeURIComponent(calendarMonth.toISOString()))
             .done(function(data) {
                 console.log('event counts loaded');
                 $('#cal-count-prev').text('('+data.eventCountBeforeCurrentMonth+')');
