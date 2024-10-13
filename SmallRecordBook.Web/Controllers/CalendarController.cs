@@ -18,23 +18,6 @@ public class CalendarController(ILogger<CalendarController> logger, IUserAccount
     IRecordRepository recordRepository)
     : ControllerBase
 {
-    private static IQueryable<RecordEntry> WhereLinkTagFindFilter(IQueryable<RecordEntry> query, Guid? link, string? tag, string? find)
-    {
-        if (link != null)
-            return query.Where(re => re.LinkReference == link);
-        if (!string.IsNullOrEmpty(tag))
-            return query.Where(re => re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && ret.Tag == tag));
-        if (!string.IsNullOrEmpty(find))
-        {
-            var like = $"%{find.Trim()}%";
-            return query.Where(re =>
-                (re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && EF.Functions.Like(ret.Tag, like))) ||
-                EF.Functions.Like(re.Title, like) ||
-                (re.Description != null && EF.Functions.Like(re.Description, like)));
-        }
-
-        return query;
-    }
 
     [HttpGet("recordentries")]
     public async IAsyncEnumerable<RecordEntryApiModel> GetRecordEntries([FromQuery] DateTime date,
@@ -83,5 +66,23 @@ public class CalendarController(ILogger<CalendarController> logger, IUserAccount
         return new(
             WhereLinkTagFindFilter(recordRepository.GetBy(user, re => re.EntryDate < dateMonth), link, tag, find).Count(),
             WhereLinkTagFindFilter(recordRepository.GetBy(user, re => re.EntryDate >= nextDateMonth), link, tag, find).Count());
+    }
+    
+    private static IQueryable<RecordEntry> WhereLinkTagFindFilter(IQueryable<RecordEntry> query, Guid? link, string? tag, string? find)
+    {
+        if (link != null)
+            return query.Where(re => re.LinkReference == link);
+        if (!string.IsNullOrEmpty(tag))
+            return query.Where(re => re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && ret.Tag == tag));
+        if (!string.IsNullOrEmpty(find))
+        {
+            var like = $"%{find.Trim()}%";
+            return query.Where(re =>
+                (re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && EF.Functions.Like(ret.Tag, like))) ||
+                EF.Functions.Like(re.Title, like) ||
+                (re.Description != null && EF.Functions.Like(re.Description, like)));
+        }
+
+        return query;
     }
 }
