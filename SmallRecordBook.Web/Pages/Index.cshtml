@@ -33,7 +33,7 @@
             noEntriesMessage = "No entries containing " + Model.Find;
         else
             noEntriesMessage = "There are no entries";
-        <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@noEntriesMessage" />
+        <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@noEntriesMessage" pagination="@Model.Pagination" />
     }
 </article>
 

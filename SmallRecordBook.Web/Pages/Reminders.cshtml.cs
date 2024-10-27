@@ -13,6 +13,8 @@ public class RemindersModel(
     : PageModel
 {
     public IEnumerable<RecordEntry> RecordEntries { get; private set; } = [];
+    public Pagination Pagination { get; private set; } = Pagination.Empty;
+    [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
     [BindProperty(SupportsGet = true)] public string View { get; set; } = "upcoming";
     [BindProperty(SupportsGet = true)] public string Sort { get; set; } = "bydatedesc";
 
@@ -20,15 +22,17 @@ public class RemindersModel(
     {
         var user = await userAccountRepository.GetUserAccountAsync(User);
         var query = recordRepository.GetBy(user, re => re.ReminderDate != null && (re.ReminderDone == null || !re.ReminderDone.Value));
-        
+
         if (View == "upcoming")
             query = query.Where(re => re.ReminderDate <= DateOnly.FromDateTime(DateTime.Today.AddMonths(1)));
-        
+
         if (Sort == "bydatedesc")
             query = query.OrderBy(re => re.ReminderDate);
         else
             query = query.OrderByDescending(re => re.ReminderDate);
-
-        RecordEntries = query.ToImmutableList();
+        
+        var pagination = Pagination.Paginate(query.ToImmutableList(), PageNumber);
+        RecordEntries = pagination.Items;
+        Pagination = new(pagination.Page, pagination.PageCount, null, null, null);
     }
 }

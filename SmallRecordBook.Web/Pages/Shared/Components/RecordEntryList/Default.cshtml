@@ -1,6 +1,26 @@
 @model RecordEntryListModel
 
 @if (Model.RecordEntries.Any()) {
+@if (Model.Pagination.PageCount > 1) {
+<div class="pagination">
+    @if (Model.Pagination.PageNumber > 1) {
+    <a title="Go to previous page of record entries" href="/?pageNumber=@(Model.Pagination.PageNumber - 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&laquo;</a>
+    }
+    @foreach (var pg in Model.Pagination.Pages) {
+    @if (pg.IsSelected) {
+    <a class="pagination-active">@pg.PageNumber</a>
+    } else {
+    <a title="Go to record entry page @pg.PageNumber" href="/?pageNumber=@pg.PageNumber&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">@pg.PageNumber</a>
+    }
+    @if (pg.IsNextPageSkipped) {
+    <a class="skip">&bull;&bull;</a>
+    }
+    }
+    @if (Model.Pagination.PageNumber < Model.Pagination.PageCount) {
+    <a title="Go to the next page of record entries" href="/?pageNumber=@(Model.Pagination.PageNumber + 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&raquo;</a>
+    }
+</div>
+}
 <ul class="srb-list">
     <li class="srb-list">
         <ul class="srb-list-item">
@@ -33,6 +53,26 @@
         </ul>
     </li>
 </ul>
+@if (Model.Pagination.PageCount > 1) {
+<div class="pagination">
+    @if (Model.Pagination.PageNumber > 1) {
+    <a title="Go to previous page of record entries" href="/?pageNumber=@(Model.Pagination.PageNumber - 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&laquo;</a>
+    }
+    @foreach (var pg in Model.Pagination.Pages) {
+    @if (pg.IsSelected) {
+    <a class="pagination-active">@pg.PageNumber</a>
+    } else {
+    <a title="Go to record entry page @pg.PageNumber" href="/?pageNumber=@pg.PageNumber&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">@pg.PageNumber</a>
+    }
+    @if (pg.IsNextPageSkipped) {
+    <a class="skip">&bull;&bull;</a>
+    }
+    }
+    @if (Model.Pagination.PageNumber < Model.Pagination.PageCount) {
+    <a title="Go to the next page of record entries" href="/?pageNumber=@(Model.Pagination.PageNumber + 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&raquo;</a>
+    }
+</div>
+}
 } else {
 <p>@Model.NoEntriesMessage</p>
 }

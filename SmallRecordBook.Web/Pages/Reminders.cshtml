@@ -17,5 +17,5 @@
     <span>View <a href="/reminders?view=upcoming&sort=@Model.Sort">only upcoming reminders</a>.</span>
     }
 
-    <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@(Model.View == "upcoming" ? "No entries with upcoming reminders" : "No entries with reminders")" />
+    <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@(Model.View == "upcoming" ? "No entries with upcoming reminders" : "No entries with reminders")" pagination="@Model.Pagination" />
 </article>

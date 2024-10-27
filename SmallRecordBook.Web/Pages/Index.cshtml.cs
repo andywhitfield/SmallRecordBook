@@ -18,6 +18,8 @@ public class IndexModel(
     [BindProperty(SupportsGet = true)] public string? Find { get; set; }
     [BindProperty(SupportsGet = true)] public string? View { get; set; }
     public IEnumerable<RecordEntry> RecordEntries { get; private set; } = [];
+    public Pagination Pagination { get; private set; } = Pagination.Empty;
+    [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
 
     public async Task OnGet()
     {
@@ -57,11 +59,12 @@ public class IndexModel(
             }
             else
             {
-                // TODO: pagination
                 RecordEntries = recordRepository.GetAll(user);
             }
         }
 
-        RecordEntries = RecordEntries.ToImmutableList();
+        var pagination = Pagination.Paginate(RecordEntries.ToImmutableList(), PageNumber);
+        RecordEntries = pagination.Items;
+        Pagination = new(pagination.Page, pagination.PageCount, Tag, Link, Find);
     }
 }
