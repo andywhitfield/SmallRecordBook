@@ -24,8 +24,10 @@ builder.Services.AddDbContext<SqliteDataContext>((serviceProvider, options) =>
 });
 builder.Services
     .AddTransient<IUserService, UserService>()
+    .AddTransient<IFeedGenerator, AtomFeedGenerator>()
     .AddScoped(sp => (ISqliteDataContext)sp.GetRequiredService<SqliteDataContext>())
     .AddScoped<IUserAccountRepository, UserAccountRepository>()
+    .AddScoped<IUserFeedRepository, UserFeedRepository>()
     .AddScoped<IRecordRepository, RecordRepository>();
 
 builder.Services

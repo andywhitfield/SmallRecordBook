@@ -1,0 +1,31 @@
+﻿@page
+@model ProfileModel
+
+<aside>
+    <vc:user-nav />
+</aside>
+
+<article>
+    <h1>Feeds</h1>
+    @if (Model.Feed == null) {
+    <form method="post" asp-page-handler="create">
+    @Html.AntiForgeryToken()
+    <p>
+        <div>There is no current rss feed. The feed will display your upcoming and overdue reminders.</div>
+        <div><button type="submit">Create a new feed</button></div>
+    </p>
+    </form>
+    } else {
+    <p>
+    <div>Feed URL: @(Request.Scheme)://@(Request.Host)/api/feed/@Model.Feed.UserFeedIdentifier</div>
+    <div>Created: @Model.Feed.CreatedDateTime.ToString("R")</div>
+    </p>
+
+    <form method="post" asp-page-handler="delete">
+    @Html.AntiForgeryToken()
+    <div>
+        <button data-confirm="This will stop your reminders being available on this feed URL - are you sure?">Delete feed</button>
+    </div>
+    </form>
+    }
+</article>
