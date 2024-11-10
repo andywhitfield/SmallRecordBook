@@ -39,26 +39,33 @@ public class WebApplicationFactoryTest : WebApplicationFactory<Program>
     }
 
     public async Task AddRecordEntriesAsync(params RecordEntry[] recordEntries)
-    {
-        await using var scope = Services.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<SqliteDataContext>();
-        context.UserAccounts.AttachRange(recordEntries.Select(re => re.UserAccount).Where(ua => ua.UserAccountId > 0));
-        context.RecordEntries.AddRange(recordEntries);
-        await context.SaveChangesAsync();
-    }
+        => await ConfigureDbContextAsync(context =>
+        {
+            context.UserAccounts.AttachRange(recordEntries.Select(re => re.UserAccount).Where(ua => ua.UserAccountId > 0));
+            context.RecordEntries.AddRange(recordEntries);
+            return Task.CompletedTask;
+        });
 
     public async Task AddRecordEntryAsync(RecordEntry recordEntry, params string[] tags)
+        => await ConfigureDbContextAsync(context =>
+        {
+            if (recordEntry.UserAccount.UserAccountId > 0)
+                context.UserAccounts.Attach(recordEntry.UserAccount);
+            context.RecordEntries.Add(recordEntry);
+            context.RecordEntryTags.AddRange(tags.Select(t => new RecordEntryTag
+            {
+                RecordEntry = recordEntry,
+                Tag = t
+            }));
+
+            return Task.CompletedTask;
+        });
+
+    public async Task ConfigureDbContextAsync(Func<SqliteDataContext, Task> contextAction)
     {
         await using var scope = Services.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<SqliteDataContext>();
-        if (recordEntry.UserAccount.UserAccountId > 0)
-            context.UserAccounts.Attach(recordEntry.UserAccount);
-        context.RecordEntries.Add(recordEntry);
-        context.RecordEntryTags.AddRange(tags.Select(t => new RecordEntryTag
-        {
-            RecordEntry = recordEntry,
-            Tag = t
-        }));
+        await contextAction(context);
         await context.SaveChangesAsync();
     }
 
