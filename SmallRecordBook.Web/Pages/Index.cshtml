@@ -67,6 +67,7 @@ $(function() {
     var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
         headerToolbar: false,
+        firstDay: 1,
         eventClick: function(info) {
             var templateContent = $('#srb-event-template').clone();
             templateContent.prop('id', self.crypto.randomUUID());
