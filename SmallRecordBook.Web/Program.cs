@@ -61,7 +61,7 @@ builder.Services
     {
         options.ServerName = "Small:RecordBook";
         options.ServerDomain = builder.Configuration.GetValue<string>("FidoDomain");
-        options.Origins = [builder.Configuration.GetValue<string>("FidoOrigins")];
+        options.Origins = new HashSet<string> { builder.Configuration.GetValue("FidoOrigins", "") };
     });
 
 var app = builder.Build();
