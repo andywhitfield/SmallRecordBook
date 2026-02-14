@@ -6,6 +6,7 @@
 </aside>
 
 <article>
+    <div>
     @if (Model.Sort == "bydatedesc") {
     <span>Sort by <a href="/reminders?view=@Model.View&sort=bydateasc">newest</a> reminder date.</span>
     } else {
@@ -16,6 +17,7 @@
     } else {
     <span>View <a href="/reminders?view=upcoming&sort=@Model.Sort">only upcoming reminders</a>.</span>
     }
+    </div>
 
-    <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@(Model.View == "upcoming" ? "No entries with upcoming reminders" : "No entries with reminders")" pagination="@Model.Pagination" />
+    <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@(Model.View == "upcoming" ? "No entries with upcoming reminders" : "No entries with reminders")" pagination="@Model.Pagination" url-path="/reminders?view=@Model.View&sort=@Model.Sort&" />
 </article>

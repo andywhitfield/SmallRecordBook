@@ -6,6 +6,6 @@ namespace SmallRecordBook.Web.Pages.Shared.ViewComponents;
 
 public class RecordEntryListViewComponent : ViewComponent
 {
-    public IViewComponentResult Invoke(IEnumerable<RecordEntry> recordEntries, string noEntriesMessage, Pagination pagination)
-        => View(new RecordEntryListModel(recordEntries, noEntriesMessage, pagination));
+    public IViewComponentResult Invoke(IEnumerable<RecordEntry> recordEntries, string noEntriesMessage, Pagination pagination, string urlPath = "/?")
+        => View(new RecordEntryListModel(recordEntries, noEntriesMessage, pagination, urlPath));
 }
