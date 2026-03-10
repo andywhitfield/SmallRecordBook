@@ -13,6 +13,8 @@ public class RecordModel(ILogger<RecordModel> logger,
     public int EntryId { get; set; }
     [BindProperty(SupportsGet = true)] public string? EntryDate { get; set; }
     [BindProperty(SupportsGet = true)] public string? Title { get; set; } = "";
+    [BindProperty(SupportsGet = true)] public string? Currency { get; set; } = "";
+    [BindProperty(SupportsGet = true)] public decimal? Amount { get; set; }
     [BindProperty(SupportsGet = true)] public string? Description { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? RemindDate { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? RemindDone { get; set; } = "";
@@ -35,6 +37,8 @@ public class RecordModel(ILogger<RecordModel> logger,
         EntryId = recordEntry.RecordEntryId;
         EntryDate = recordEntry.EntryDate.ToDisplayString();
         Title = recordEntry.Title;
+        Currency = recordEntry.Currency; // TODO: default to the most recent (or most common?) currency
+        Amount = recordEntry.Amount;
         Description = recordEntry.Description;
         RemindDate = recordEntry.ReminderDate.ToDisplayString();
         RemindDone = recordEntry.ReminderDone.GetValueOrDefault() ? "true" : "";
@@ -78,6 +82,8 @@ public class RecordModel(ILogger<RecordModel> logger,
 
         recordEntry.EntryDate = EntryDate.ParseDateOnly();
         recordEntry.Title = Title;
+        recordEntry.Currency = Amount == null || string.IsNullOrWhiteSpace(Currency) ? null : Currency;
+        recordEntry.Amount = Amount;
         recordEntry.Description = Description;
         recordEntry.ReminderDate = RemindDate.ParseDateOnly(null);
         recordEntry.ReminderDone = recordEntry.ReminderDate == null ? null : RemindDone == "true";

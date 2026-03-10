@@ -260,6 +260,21 @@ input.srb-entry-tags {
     width: 300px;
 }
 
+input.srb-entry-currency {
+    width: 28px;
+}
+
+input.srb-entry-amount {
+    width: 250px;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input.srb-entry-amount::-webkit-outer-spin-button,
+input.srb-entry-amount::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 textarea.srb-entry-description {
     width: 300px;
     height: 60px;

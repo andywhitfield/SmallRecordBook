@@ -5,13 +5,16 @@ using SmallRecordBook.Web.Repositories;
 using SmallRecordBook.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorPages(options =>
+var mvcBuilder = builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
     options.Conventions.AllowAnonymousToPage("/signin");
     options.Conventions.AllowAnonymousToPage("/signinverify");
     options.Conventions.AllowAnonymousToPage("/signout");
 });
+#if DEBUG
+mvcBuilder.AddRazorRuntimeCompilation();
+#endif
 builder.Services.AddControllers();
 builder.Services.AddDbContext<SqliteDataContext>((serviceProvider, options) =>
 {
