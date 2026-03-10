@@ -13,6 +13,8 @@ public class RecordEntry
     public required DateOnly EntryDate { get; set; }
     [Required]
     public required string Title { get; set; }
+    public string? Currency { get; set; }
+    public decimal? Amount { get; set; }
     public string? Description { get; set; }
     public DateOnly? ReminderDate { get; set; }
     public bool? ReminderDone { get; set; }

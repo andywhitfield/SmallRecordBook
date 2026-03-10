@@ -34,7 +34,12 @@
                     <div>
                         @recordEntry.Title
                     </div>
-                    <div>@recordEntry.Description</div>
+                    @if (recordEntry.Amount != null) {
+                    <div class="srb-list-item-entry-info">@Model.CcyAmount(recordEntry)</div>
+                    }
+                    @if (!string.IsNullOrEmpty(recordEntry.Description)) {
+                    <div class="srb-list-item-entry-info">@recordEntry.Description</div>
+                    }
                     @if (recordEntry.ActiveRecordEntryTags.Any()) {
                     <div class="srb-tag">
                         @foreach (var tag in recordEntry.ActiveRecordEntryTags) {

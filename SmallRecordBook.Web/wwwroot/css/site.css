@@ -235,7 +235,7 @@ div.srb-list-item-entry>div:first-child {
     font-weight: bold;
 }
 
-div.srb-list-item-entry>div:nth-child(3) {
+div.srb-list-item-entry-info {
     font-size: smaller;
     white-space: pre-line;
 }
