@@ -1,4 +1,5 @@
 ﻿@page
+@using SmallRecordBook.Web.Pages.Shared
 @model AddModel
 
 <aside>
@@ -18,6 +19,11 @@
     <div>
         <label for="srb-entry-title">Title:</label>
         <input type="text" id="srb-entry-title" name="title" class="srb-entry-title" autofocus value="@Model.Title" />
+    </div>
+    <div>
+        <label for="srb-entry-amount">Amount:</label>
+        <input type="text" id="srb-entry-currency" name="currency" class="srb-entry-currency" value="@Model.Currency" placeholder="ccy" title="Currency, e.g. $, £, €" />
+        <input type="number" min="0" step="any" inputmode="decimal" id="srb-entry-amount" name="amount" class="srb-entry-amount" value="@Model.Amount.FormattedAmount()" />
     </div>
     <div>
         <label for="srb-entry-description">Description:</label>

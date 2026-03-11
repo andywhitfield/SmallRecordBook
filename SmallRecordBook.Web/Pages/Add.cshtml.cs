@@ -11,6 +11,8 @@ public class AddModel(ILogger<AddModel> logger,
     : PageModel
 {
     [BindProperty(SupportsGet = true)] public string? EntryDate { get; set; }
+    [BindProperty(SupportsGet = true)] public string? Currency { get; set; } = "";
+    [BindProperty(SupportsGet = true)] public decimal? Amount { get; set; }
     [BindProperty(SupportsGet = true)] public string? Title { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? Description { get; set; } = "";
     [BindProperty(SupportsGet = true)] public string? RemindDate { get; set; } = "";
@@ -21,15 +23,19 @@ public class AddModel(ILogger<AddModel> logger,
 
     public async Task OnGet()
     {
+        var userAccount = await userAccountRepository.GetUserAccountAsync(User);
+
         EntryDate ??= DateTime.Today.ToString("yyyy-MM-dd");
+        Currency = await recordRepository.GetDefaultCurrencyAsync(userAccount);
 
         if (Parent != null)
         {
             logger.LogInformation("Getting parent record entry {Parent}", Parent);
-            var userAccount = await userAccountRepository.GetUserAccountAsync(User);
             var recordEntry = await recordRepository.GetByIdAsync(userAccount, Parent.Value);
             if (recordEntry != null)
             {
+                Currency = string.IsNullOrEmpty(recordEntry.Currency) ? Currency : recordEntry.Currency;
+                Amount = recordEntry.Amount;
                 Title = recordEntry.Title;
                 Description = recordEntry.Description;
                 Tags = recordEntry.TagString();
@@ -53,10 +59,10 @@ public class AddModel(ILogger<AddModel> logger,
             EntryDate, entryDate, Title, Description, RemindDate, reminderDate, Tags, Parent);
         var newRecordEntry = await recordRepository.AddAsync(
             await userAccountRepository.GetUserAccountAsync(User),
-            entryDate, Title ?? "", Description, reminderDate, Tags, Parent);
+            entryDate, Title ?? "", Amount == null || string.IsNullOrWhiteSpace(Currency) ? null : Currency, Amount, Description, reminderDate, Tags, Parent);
 
-        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]; parent [{Parent}]",
-            newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Description, newRecordEntry.ReminderDate, newRecordEntry.TagString(), Parent);
+        logger.LogInformation("Created new record entry on [{EntryDate}] with title [{Title}]; amount [{Currency}{Amount}]; description [{Description}]; reminder date [{ReminderDate}]; tags [{Tags}]; parent [{Parent}]",
+            newRecordEntry.EntryDate, newRecordEntry.Title, newRecordEntry.Currency, newRecordEntry.Amount, newRecordEntry.Description, newRecordEntry.ReminderDate, newRecordEntry.TagString(), Parent);
         return Redirect("/");
     }
 }

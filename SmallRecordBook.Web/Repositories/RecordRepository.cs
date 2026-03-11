@@ -26,14 +26,16 @@ public class RecordRepository(
             .Where(e => e.UserAccountId == user.UserAccountId && e.DeletedDateTime == null)
             .Where(condition);
 
-    public async Task<RecordEntry> AddAsync(UserAccount user, DateOnly entryDate, string title, string? description, DateOnly? reminderDate,
-        string? tags, int? parentRecordEntryId)
+    public async Task<RecordEntry> AddAsync(UserAccount user, DateOnly entryDate, string title, string? currency, decimal? amount,
+        string? description, DateOnly? reminderDate, string? tags, int? parentRecordEntryId)
     {
         RecordEntry newRecordEntry = new()
         {
             UserAccount = user,
             EntryDate = entryDate,
             Title = title,
+            Currency = currency,
+            Amount = amount,
             Description = description,
             ReminderDate = reminderDate,
         };
