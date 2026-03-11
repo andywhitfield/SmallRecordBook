@@ -12,4 +12,5 @@ public interface IRecordRepository
     Task SaveAsync(UserAccount user, RecordEntry recordEntry, string? tags);
     Task DeleteAsync(UserAccount user, RecordEntry recordEntry);
     IEnumerable<(string Tag, int TagCount)> GetTags(UserAccount user);
+    Task<string> GetDefaultCurrencyAsync(UserAccount user);
 }

@@ -120,4 +120,11 @@ public class RecordRepository(
 
         await context.SaveChangesAsync();
     }
+
+    public async Task<string> GetDefaultCurrencyAsync(UserAccount user)
+        => await context.RecordEntries
+            .Where(re => re.UserAccountId == user.UserAccountId && re.DeletedDateTime == null && !string.IsNullOrEmpty(re.Currency))
+            .OrderByDescending(re => re.LastUpdateDateTime ?? re.CreatedDateTime)
+            .Select(re => re.Currency!)
+            .FirstOrDefaultAsync() ?? "£";
 }

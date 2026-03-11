@@ -37,7 +37,7 @@ public class RecordModel(ILogger<RecordModel> logger,
         EntryId = recordEntry.RecordEntryId;
         EntryDate = recordEntry.EntryDate.ToDisplayString();
         Title = recordEntry.Title;
-        Currency = recordEntry.Currency; // TODO: default to the most recent (or most common?) currency
+        Currency = string.IsNullOrEmpty(recordEntry.Currency) ? await recordRepository.GetDefaultCurrencyAsync(userAccount) : recordEntry.Currency;
         Amount = recordEntry.Amount;
         Description = recordEntry.Description;
         RemindDate = recordEntry.ReminderDate.ToDisplayString();
