@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmallRecordBook.Web.Controllers.ApiModels;
 using SmallRecordBook.Web.Models;
+using SmallRecordBook.Web.Pages.Shared;
 using SmallRecordBook.Web.Pages.ViewModels;
 using SmallRecordBook.Web.Repositories;
 
@@ -49,7 +50,7 @@ public class CalendarController(ILogger<CalendarController> logger, IUserAccount
         {
             yield return new RecordEntryApiModel(
                 recordEntry.RecordEntryId, recordEntry.EntryDate, recordEntry.EntryDate.ToString("dddd dd MMMM yyyy"),
-                recordEntry.Title, recordEntry.Description, recordEntry.ActiveRecordEntryTags.Select(t => t.Tag),
+                recordEntry.Title, recordEntry.CcyAmount(), recordEntry.Description, recordEntry.ActiveRecordEntryTags.Select(t => t.Tag),
                 recordEntry.ReminderDate, recordEntry.ReminderDate?.ToString("dddd dd MMMM yyyy"),
                 recordEntry.ListItemCss());
         }

@@ -46,6 +46,7 @@
 <template id="srb-event-template">
     <div><a href="#" data-id="date">entry date</a></div>
     <div data-id="title">title</div>
+    <div data-id="ccyamount">amount</div>
     <div data-id="description">description</div>
     <div data-id="tags" class="srb-tag"></div>
     <div data-id="itemcss"><span class="srb-reminder"></span></div>
@@ -76,6 +77,7 @@ $(function() {
             $('[data-id="date"]', templateJQ).text(info.event.extendedProps.record.entryDateDesc);
             $('[data-id="date"]', templateJQ).prop('href', '/record/'+info.event.extendedProps.record.recordEntryId);
             $('[data-id="title"]', templateJQ).text(info.event.extendedProps.record.title);
+            $('[data-id="ccyamount"]', templateJQ).text(info.event.extendedProps.record.ccyAmount);
             $('[data-id="description"]', templateJQ).text(info.event.extendedProps.record.description);
             for (const tag of info.event.extendedProps.record.tags) {
                 $('[data-id="tags"]', templateJQ).append($('<a href="/?tag='+encodeURIComponent(tag)+'">'+tag+'</a>')).append(' ');
