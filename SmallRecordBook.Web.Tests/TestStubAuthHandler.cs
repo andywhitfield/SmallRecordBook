@@ -29,8 +29,11 @@ public class TestStubAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> op
     {
         await using var serviceScope = serviceProvider.CreateAsyncScope();
         using var context = serviceScope.ServiceProvider.GetRequiredService<SqliteDataContext>();
-        return await context.UserAccounts.SingleAsync(ua => ua.Email == _testUserEmail);
+        return await GetTestUserAsync(context);
     }
+
+    public static async Task<UserAccount> GetTestUserAsync(SqliteDataContext context)
+        => await context.UserAccounts.SingleAsync(ua => ua.Email == _testUserEmail);
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync() =>
         Task.FromResult(Request.Headers.Authorization.Count != 0
