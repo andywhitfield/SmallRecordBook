@@ -29,6 +29,56 @@ public class HomeTests
     }
 
     [TestMethod]
+    public async Task Should_show_all_items()
+    {
+        var testUser = await TestStubAuthHandler.GetTestUserAsync(_webApplicationFactory.Services);
+        await _webApplicationFactory.AddRecordEntriesAsync(
+            new()
+            {
+                EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Title = "Item1",
+                UserAccount = testUser,
+                Currency = "£",
+                Amount = 10.99m,
+                Description = "Item1 in pounds"
+            },
+            new()
+            {
+                EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Title = "Item2",
+                UserAccount = testUser,
+                Currency = "$",
+                Amount = 12,
+                Description = "Item2 in dollars, with no decimal places"
+            },
+            new()
+            {
+                EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Title = "Item3",
+                UserAccount = testUser,
+                Currency = "£",
+                Amount = 5.1m
+            },
+            new()
+            {
+                EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Title = "Item4",
+                UserAccount = testUser,
+                Description = "Item4 with no amount"
+            });
+        using var client = _webApplicationFactory.CreateClient(true);
+        using var response = await client.GetAsync($"/");
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Assert.Contains(">&#xA3;10.99<", responseContent);
+        Assert.Contains(">Item1 in pounds<", responseContent);
+        Assert.Contains(">$12<", responseContent);
+        Assert.Contains(">Item2 in dollars, with no decimal places<", responseContent);
+        Assert.Contains(">&#xA3;5.10<", responseContent);
+        Assert.Contains(">Item4 with no amount<", responseContent);
+    }
+
+    [TestMethod]
     public async Task Should_only_show_linked_items()
     {
         var linkGuid1 = Guid.NewGuid();
