@@ -20,6 +20,8 @@ public class CalendarControllerTests
             {
                 EntryDate = new(2024, 10, 13),
                 Title = "Item1",
+                Currency = "£",
+                Amount = 10.99m,
                 UserAccount = testUser,
                 Description = "Item1 description"
             },
@@ -27,6 +29,8 @@ public class CalendarControllerTests
             {
                 EntryDate = new(2024, 9, 1),
                 Title = "Item2",
+                Currency = "$",
+                Amount = 12,
                 UserAccount = testUser,
                 Description = "Item2 description"
             },
@@ -48,6 +52,8 @@ public class CalendarControllerTests
             {
                 EntryDate = new(2024, 12, 1),
                 Title = "Item5",
+                Currency = "£",
+                Amount = 5.1m,
                 UserAccount = testUser,
                 Description = "Item5 description"
             });
@@ -59,8 +65,10 @@ public class CalendarControllerTests
         var responseContent = await response.Content.ReadAsStringAsync();
         StringAssert.Contains(responseContent, "Item1");
         StringAssert.Contains(responseContent, "Item1 description");
+        StringAssert.Contains(responseContent, "£10.99");
 
         StringAssert.Contains(responseContent, "Item2");
+        StringAssert.Contains(responseContent, "$12");
         StringAssert.Contains(responseContent, "Item2 description");
 
         StringAssert.DoesNotMatch(responseContent, new("Item3"));
@@ -71,6 +79,7 @@ public class CalendarControllerTests
 
         StringAssert.DoesNotMatch(responseContent, new("Item5"));
         StringAssert.DoesNotMatch(responseContent, new("Item5 description"));
+        Assert.DoesNotContain(responseContent, "£5.10");
     }
 
     [TestMethod]
