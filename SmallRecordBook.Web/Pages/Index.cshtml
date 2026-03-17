@@ -25,7 +25,9 @@
     <button id="cal-next-year" title="Next year">&nbsp;&raquo;&nbsp;</button>
     <div id="cal-date"></div>
     <div id="calendar"></div>
-    <div id="entries-amount-total" class="srb-list-item-total"></div>
+    @if (!string.IsNullOrEmpty(Model.AmountTotal)) {
+    <div class="srb-list-item-total">Amount total: @Model.AmountTotal</div>
+    }
     } else {
         string noEntriesMessage;
         if (!string.IsNullOrEmpty(Model.Tag))

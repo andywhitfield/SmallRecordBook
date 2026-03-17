@@ -33,50 +33,58 @@ public class IndexModel(
             View = await userAccountRepository.GetUserAccountSettingOrDefaultAsync(user, UserAccountSetting.ViewListOrCalendar, "");
 
         if (View != "calendar") // the calendar view is populated dynamically / via the CalendarController api call
-        {
-            if (Link != null)
-            {
-                RecordEntries = recordRepository
-                    .GetBy(user, re => re.LinkReference == Link)
-                    .OrderByDescending(e => e.EntryDate)
-                    .ThenBy(e => e.Title);
-            }
-            else if (!string.IsNullOrEmpty(Tag))
-            {
-                RecordEntries = recordRepository
-                    .GetBy(user, re => re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && ret.Tag == Tag))
-                    .OrderByDescending(e => e.EntryDate)
-                    .ThenBy(e => e.Title);
-            }
-            else if (!string.IsNullOrEmpty(Find))
-            {
-                var like = $"%{Find.Trim()}%";
-                RecordEntries = recordRepository
-                    .GetBy(user, re =>
-                        (re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && EF.Functions.Like(ret.Tag, like))) ||
-                        EF.Functions.Like(re.Title, like) ||
-                        (re.Description != null && EF.Functions.Like(re.Description, like)))
-                    .OrderByDescending(e => e.EntryDate)
-                    .ThenBy(e => e.Title);
-            }
-            else
-            {
-                RecordEntries = recordRepository.GetAll(user);
-            }
-        }
+            RecordEntries = LoadRecordEntries(user);
 
-        var allEntries = RecordEntries.ToImmutableList();
+        IEnumerable<RecordEntry> allEntries = RecordEntries.ToImmutableList();
         var pagination = Pagination.Paginate(allEntries, PageNumber);
         RecordEntries = pagination.Items;
         Pagination = new(pagination.Page, pagination.PageCount, Tag, Link, Find);
 
-        if (View != "calendar" && (Link != null || !string.IsNullOrEmpty(Tag) || !string.IsNullOrEmpty(Find)))
+        if (Link != null || !string.IsNullOrEmpty(Tag) || !string.IsNullOrEmpty(Find))
         {
+            // as we haven't loaded any entries when in calendar view, we need to load them now to be able to calculate the totals
+            // perhaps not ideal, but good enough for now
+            if (View == "calendar")
+                allEntries = LoadRecordEntries(user);
+
             AmountTotal = string.Join("; ", allEntries
                 .Where(e => e.Currency != null && e.Amount != null)
                 .GroupBy(e => e.Currency)
                 .OrderBy(g => g.Key)
                 .Select(g => $"{g.Key}{g.Sum(e => e.Amount).FormattedAmount()}"));
         }
+    }
+
+    private IEnumerable<RecordEntry> LoadRecordEntries(UserAccount user)
+    {
+        if (Link != null)
+        {
+            return recordRepository
+                .GetBy(user, re => re.LinkReference == Link)
+                .OrderByDescending(e => e.EntryDate)
+                .ThenBy(e => e.Title);
+        }
+        
+        if (!string.IsNullOrEmpty(Tag))
+        {
+            return recordRepository
+                .GetBy(user, re => re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && ret.Tag == Tag))
+                .OrderByDescending(e => e.EntryDate)
+                .ThenBy(e => e.Title);
+        }
+        
+        if (!string.IsNullOrEmpty(Find))
+        {
+            var like = $"%{Find.Trim()}%";
+            return recordRepository
+                .GetBy(user, re =>
+                    (re.RecordEntryTags != null && re.RecordEntryTags.Any(ret => ret.DeletedDateTime == null && EF.Functions.Like(ret.Tag, like))) ||
+                    EF.Functions.Like(re.Title, like) ||
+                    (re.Description != null && EF.Functions.Like(re.Description, like)))
+                .OrderByDescending(e => e.EntryDate)
+                .ThenBy(e => e.Title);
+        }
+        
+        return recordRepository.GetAll(user);
     }
 }
