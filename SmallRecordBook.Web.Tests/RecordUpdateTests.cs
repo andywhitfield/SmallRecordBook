@@ -84,7 +84,7 @@ public class RecordUpdateTests
             { "EntryDate", DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy-MM-dd") },
             { "Title", "Item1" },
             { "Currency", "$" },
-            { "Amount", "10.9" },
+            { "Amount", "1000.9" },
             { "Description", "Item1 in dollars" },
             { "__RequestVerificationToken", WebApplicationFactoryTest.GetFormValidationToken(recordViewPage, pageUri) }
         }));
@@ -93,7 +93,7 @@ public class RecordUpdateTests
         using var responsePostUpdate = await client.GetAsync(pageUri);
         var updatedRecordPage = await responsePostUpdate.Content.ReadAsStringAsync();
         Assert.Contains("value=\"Item1\"", updatedRecordPage);
-        Assert.Contains("value=\"10.90\"", updatedRecordPage);
+        Assert.Contains("value=\"1000.90\"", updatedRecordPage);
         Assert.Contains("value=\"$\"", updatedRecordPage);
         Assert.DoesNotContain("value=\"£\"", updatedRecordPage);
         Assert.DoesNotContain("value=\"&#xA3\"", updatedRecordPage);

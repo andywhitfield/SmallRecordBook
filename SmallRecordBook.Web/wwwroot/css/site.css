@@ -208,6 +208,11 @@ ul.srb-list-item {
     font-style: oblique;
 }
 
+.srb-list-item-total {
+    font-size: small;
+    font-weight: bold;
+}
+
 ul.srb-list-item>li {
     display: flex;
     background-color: #92d3d4;

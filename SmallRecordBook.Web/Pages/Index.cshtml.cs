@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SmallRecordBook.Web.Models;
+using SmallRecordBook.Web.Pages.Shared;
 using SmallRecordBook.Web.Repositories;
 
 namespace SmallRecordBook.Web.Pages;
@@ -19,6 +20,7 @@ public class IndexModel(
     [BindProperty(SupportsGet = true)] public string? View { get; set; }
     public IEnumerable<RecordEntry> RecordEntries { get; private set; } = [];
     public Pagination Pagination { get; private set; } = Pagination.Empty;
+    public string AmountTotal { get; private set; } = "";
     [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
 
     public async Task OnGet()
@@ -63,8 +65,18 @@ public class IndexModel(
             }
         }
 
-        var pagination = Pagination.Paginate(RecordEntries.ToImmutableList(), PageNumber);
+        var allEntries = RecordEntries.ToImmutableList();
+        var pagination = Pagination.Paginate(allEntries, PageNumber);
         RecordEntries = pagination.Items;
         Pagination = new(pagination.Page, pagination.PageCount, Tag, Link, Find);
+
+        if (View != "calendar" && (Link != null || !string.IsNullOrEmpty(Tag) || !string.IsNullOrEmpty(Find)))
+        {
+            AmountTotal = string.Join("; ", allEntries
+                .Where(e => e.Currency != null && e.Amount != null)
+                .GroupBy(e => e.Currency)
+                .OrderBy(g => g.Key)
+                .Select(g => $"{g.Key}{g.Sum(e => e.Amount).FormattedAmount()}"));
+        }
     }
 }

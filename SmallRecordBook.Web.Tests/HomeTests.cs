@@ -48,7 +48,7 @@ public class HomeTests
                 Title = "Item2",
                 UserAccount = testUser,
                 Currency = "$",
-                Amount = 12,
+                Amount = 1200,
                 Description = "Item2 in dollars, with no decimal places"
             },
             new()
@@ -72,7 +72,7 @@ public class HomeTests
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.Contains(">&#xA3;10.99<", responseContent);
         Assert.Contains(">Item1 in pounds<", responseContent);
-        Assert.Contains(">$12<", responseContent);
+        Assert.Contains(">$1,200<", responseContent);
         Assert.Contains(">Item2 in dollars, with no decimal places<", responseContent);
         Assert.Contains(">&#xA3;5.10<", responseContent);
         Assert.Contains(">Item4 with no amount<", responseContent);

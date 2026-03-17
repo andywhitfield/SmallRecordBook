@@ -11,13 +11,15 @@ public static class RecordEntryViewExtensions
         return $"{recordEntry.Currency}{FormattedAmount(recordEntry.Amount)}";
     }
 
-    public static string FormattedAmount(this decimal? amount)
+    public static string FormattedAmount(this decimal? amount, bool includeThousandSeparator = true)
     {
         if (amount == null)
             return "";
         // poor man's formatting - simply format to at least 2dp if a non-integer value
         // could look at using the C specifier and use the correct culture
-        var format = decimal.IsInteger(amount.Value) ? "0" : "0.00####";
+        var format = includeThousandSeparator ? "#,##0" : "0";
+        if (!decimal.IsInteger(amount.Value))
+            format += ".00####";
         return amount.Value.ToString(format);
     }
 }

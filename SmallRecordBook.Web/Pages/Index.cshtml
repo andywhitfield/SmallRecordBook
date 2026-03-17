@@ -25,6 +25,7 @@
     <button id="cal-next-year" title="Next year">&nbsp;&raquo;&nbsp;</button>
     <div id="cal-date"></div>
     <div id="calendar"></div>
+    <div id="entries-amount-total" class="srb-list-item-total"></div>
     } else {
         string noEntriesMessage;
         if (!string.IsNullOrEmpty(Model.Tag))
@@ -33,7 +34,7 @@
             noEntriesMessage = "No entries containing " + Model.Find;
         else
             noEntriesMessage = "There are no entries";
-        <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@noEntriesMessage" pagination="@Model.Pagination" />
+        <vc:record-entry-list record-entries="@Model.RecordEntries" no-entries-message="@noEntriesMessage" pagination="@Model.Pagination" amount-total="@Model.AmountTotal" />
     }
 </article>
 

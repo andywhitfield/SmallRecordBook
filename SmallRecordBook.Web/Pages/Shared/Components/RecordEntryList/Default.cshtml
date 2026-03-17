@@ -55,6 +55,16 @@
                 </div>
             </li>
             }
+            @if (!string.IsNullOrEmpty(Model.AmountTotal)) {
+            <li class="srb-list-item">
+                <div></div>
+                <div class="srb-list-item-entry">
+                    <div></div>
+                    <div class="srb-list-item-total">Amount total: @Model.AmountTotal</div>
+                </div>
+                <div></div>
+            </li>
+            }
         </ul>
     </li>
 </ul>
