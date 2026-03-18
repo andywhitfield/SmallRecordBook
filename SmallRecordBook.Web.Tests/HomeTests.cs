@@ -76,6 +76,7 @@ public class HomeTests
         Assert.Contains(">Item2 in dollars, with no decimal places<", responseContent);
         Assert.Contains(">&#xA3;5.10<", responseContent);
         Assert.Contains(">Item4 with no amount<", responseContent);
+        Assert.DoesNotContain("Total amount:", responseContent, message: "Total amount should not be shown when listing all items");
     }
 
     [TestMethod]
@@ -91,7 +92,9 @@ public class HomeTests
                 Title = "Item1",
                 UserAccount = testUser,
                 Description = "Item1 linked with Item4",
-                LinkReference = linkGuid1
+                LinkReference = linkGuid1,
+                Currency = "£",
+                Amount = 1099.99m
             },
             new()
             {
@@ -115,7 +118,9 @@ public class HomeTests
                 Title = "Item4",
                 UserAccount = testUser,
                 Description = "Item4 linked with Item1",
-                LinkReference = linkGuid1
+                LinkReference = linkGuid1,
+                Currency = "$",
+                Amount = 2100m
             });
         using var client = _webApplicationFactory.CreateClient(true);
         using var response = await client.GetAsync($"/?link={linkGuid1}");
@@ -125,6 +130,7 @@ public class HomeTests
         StringAssert.Matches(responseContent, new("Item4 linked with Item1"));
         StringAssert.DoesNotMatch(responseContent, new("Item2 linked with Item3"));
         StringAssert.DoesNotMatch(responseContent, new("Item3 linked with Item2"));
+        Assert.Contains(">Amount total: $2,100; &#xA3;1,099.99<", responseContent);
     }
 
     [TestMethod]
@@ -137,7 +143,9 @@ public class HomeTests
                 EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Title = "Item1",
                 UserAccount = testUser,
-                Description = "Item1 with tag1"
+                Description = "Item1 with tag1",
+                Currency = "$",
+                Amount = 100m
             },
             "tag1");
         await _webApplicationFactory.AddRecordEntryAsync(
@@ -155,7 +163,9 @@ public class HomeTests
                 EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Title = "Item3",
                 UserAccount = testUser,
-                Description = "Item3 with tag1 and tag2"
+                Description = "Item3 with tag1 and tag2",
+                Currency = "$",
+                Amount = 2100m
             },
             "tag1", "tag2");
         await _webApplicationFactory.AddRecordEntryAsync(
@@ -175,6 +185,7 @@ public class HomeTests
         StringAssert.Matches(responseContent, new("Item3 with tag1 and tag2"));
         StringAssert.DoesNotMatch(responseContent, new("Item2 with tag2"));
         StringAssert.DoesNotMatch(responseContent, new("Item4 with tag3"));
+        Assert.Contains(">Amount total: $2,200<", responseContent);
     }
 
     [TestMethod]
@@ -187,7 +198,9 @@ public class HomeTests
                 EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Title = "Item1",
                 UserAccount = testUser,
-                Description = "Item1 matching 'Find-Value' in the description"
+                Description = "Item1 matching 'Find-Value' in the description",
+                Currency = "$",
+                Amount = 1110m
             },
             "tag");
         await _webApplicationFactory.AddRecordEntryAsync(
@@ -205,7 +218,9 @@ public class HomeTests
                 EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Title = "Item3 find-values title",
                 UserAccount = testUser,
-                Description = "Item3 matching title"
+                Description = "Item3 matching title",
+                Currency = "£",
+                Amount = 100.99m
             },
             "tag", "other-tag");
         await _webApplicationFactory.AddRecordEntryAsync(
@@ -223,7 +238,9 @@ public class HomeTests
                 EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Title = "Item5",
                 UserAccount = testUser,
-                Description = "Item5 matching 'find-value' in a tag"
+                Description = "Item5 matching 'find-value' in a tag",
+                Currency = "$",
+                Amount = 2100m
             },
             "tag", "a-find-value-tag");
         using var client = _webApplicationFactory.CreateClient(true);
@@ -235,6 +252,7 @@ public class HomeTests
         StringAssert.Matches(responseContent, new("Item5 matching &#x27;find-value&#x27; in a tag"));
         StringAssert.DoesNotMatch(responseContent, new("Item2 not matching anything"));
         StringAssert.DoesNotMatch(responseContent, new("Item4 not matching anything"));
+        Assert.Contains(">Amount total: $3,210; &#xA3;100.99<", responseContent);
     }
 
     [TestCleanup]
