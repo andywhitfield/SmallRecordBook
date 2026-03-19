@@ -260,9 +260,12 @@ input.srb-entry-reminddate {
     width: 110px;
 }
 
-input.srb-entry-title,
-input.srb-entry-tags {
+input.srb-entry-title {
     width: 300px;
+}
+
+input.srb-entry-tags {
+    width: 225px;
 }
 
 input.srb-entry-currency {
@@ -289,17 +292,26 @@ textarea.srb-entry-description {
     color: black;
 }
 
-div.srb-tag {
+.srb-tag {
     padding: 2px 0px 2px 0px;
 }
 
 div.srb-tag a,
 div.srb-tag a:link,
-div.srb-tag a:visited {
+div.srb-tag a:visited,
+span.srb-tag a,
+span.srb-tag a:link,
+span.srb-tag a:visited {
     font-size: small;
     padding: 1px 2px 1px 2px;
     background-color: #b1c9ff;
     color: white;
+}
+
+div.srb-tag a:hover,
+span.srb-tag a:hover {
+    background-color: white;
+    color: #b1c9ff;
 }
 
 .pagination {

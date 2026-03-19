@@ -42,11 +42,22 @@
     </div>
     <div>
         <label for="srb-entry-tags">Tags:</label>
-        <input type="text" id="srb-entry-tags" name="tags" class="srb-entry-tags" value="@Model.Tags" />
+        <input type="hidden" name="tags" value="@Model.Tags" />
+        <span class="srb-tag">
+        <span class="src-entry-tag-edit-view">
+        <input type="button" id="src-entry-tag-edit" value="&#9998;" title="Edit the tags" />
+        </span>
+
+        <span class="src-entry-tag-edit-controls">
+        <input type="text" id="srb-entry-tags" name="tags-edit" class="srb-entry-tags" />
+        <input type="button" id="src-entry-tag-edit-ok" value="&#10003;" title="Update the tags to these new values" />
+        <input type="button" id="src-entry-tag-edit-cancel" value="&#10005;" title="Don't update the tags, revert to the saved values" />
+        </span>
+        </span>
     </div>
     @if (Model.LinkReference != null) {
     <div>
-        <label for="srb-entry-links">References:</label>
+        <label>References:</label>
         <a href="/?link=@Model.LinkReference">View all linked entries</a>
     </div>
     }
@@ -74,5 +85,41 @@ remindDatepicker.options.setTitle('Reminder date');
 remindDatepicker.options.classNames.setClassName(TheDatepicker.ClassNameType.HeaderTitleContent, "srb-entry-datepicker-title");
 remindDatepicker.options.setInputFormat('Y-m-d');
 remindDatepicker.render();
+
+$(function() {
+    const tagViewElements = $('.src-entry-tag-edit-view');
+    const tagEditElements = $('.src-entry-tag-edit-controls');
+    const tagEditInput = $('#srb-entry-tags');
+    const tagInput = $('input[type="hidden"][name="tags"]');
+
+    function writeTags() {
+        $('a', tagViewElements).remove();
+        for (const t of tagInput.val().split(' ').toReversed()) {
+            var newTagEl = $('<a href="/?tag=' + encodeURIComponent(t) + '"></a>');
+            newTagEl.text(t);
+            tagViewElements.prepend(newTagEl, ' ');
+        }
+    }
+
+    tagEditElements.hide();
+    writeTags();
+
+    $('#src-entry-tag-edit').click(function() {
+        tagEditInput.val(tagInput.val());
+        tagViewElements.hide();
+        tagEditElements.show();
+        tagEditInput.focus();
+    });
+    $('#src-entry-tag-edit-ok').click(function() {
+        tagEditElements.hide();
+        tagViewElements.show();
+        tagInput.val(tagEditInput.val());
+        writeTags();
+    });
+    $('#src-entry-tag-edit-cancel').click(function() {
+        tagEditElements.hide();
+        tagViewElements.show();
+    });
+});
 </script>
 }
