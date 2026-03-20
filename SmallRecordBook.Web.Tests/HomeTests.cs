@@ -255,6 +255,44 @@ public class HomeTests
         Assert.Contains(">Amount total: $3,210; &#xA3;100.99<", responseContent);
     }
 
+    [TestMethod]
+    public async Task Should_display_tags()
+    {
+        var testUser = await TestStubAuthHandler.GetTestUserAsync(_webApplicationFactory.Services);
+        await _webApplicationFactory.AddRecordEntryAsync(
+            new()
+            {
+                EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Title = "Item1",
+                UserAccount = testUser
+            }, "tag1", "tag+2", "tag>3");
+        await _webApplicationFactory.AddRecordEntryAsync(
+            new()
+            {
+                EntryDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Title = "Item2",
+                UserAccount = testUser
+            }, "tag'4", "pound£");
+        using var client = _webApplicationFactory.CreateClient(true);
+        using var response = await client.GetAsync($"/");
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Item1", responseContent);
+        Assert.Contains("tag=tag1", responseContent);
+        Assert.Contains(">tag1<", responseContent);
+        Assert.Contains("tag=tag%2B2", responseContent);
+        Assert.Contains(">tag&#x2B;2<", responseContent);
+        Assert.Contains("tag=tag%3E3", responseContent);
+        Assert.Contains(">tag&gt;3<", responseContent);
+
+        Assert.Contains("Item2", responseContent);
+        Assert.Contains("tag=tag%274", responseContent);
+        Assert.Contains(">tag&#x27;4<", responseContent);
+        Assert.Contains("tag=pound%C2%A3", responseContent);
+        Assert.Contains(">pound&#xA3;<", responseContent);
+    }
+
     [TestCleanup]
     public void Cleanup() => _webApplicationFactory.Dispose();
 }

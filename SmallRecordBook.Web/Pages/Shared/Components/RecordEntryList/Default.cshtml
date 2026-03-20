@@ -4,20 +4,20 @@
 @if (Model.Pagination.PageCount > 1) {
 <div class="pagination">
     @if (Model.Pagination.PageNumber > 1) {
-    <a title="Go to previous page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber - 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&laquo;</a>
+    <a title="Go to previous page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber - 1)&tag=@Uri.EscapeDataString(Model.Pagination.Tag ?? "")&link=@Model.Pagination.Link&find=@Uri.EscapeDataString(Model.Pagination.Find ?? "")">&laquo;</a>
     }
     @foreach (var pg in Model.Pagination.Pages) {
     @if (pg.IsSelected) {
     <a class="pagination-active">@pg.PageNumber</a>
     } else {
-    <a title="Go to record entry page @pg.PageNumber" href="@(Model.UrlPath)pageNumber=@pg.PageNumber&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">@pg.PageNumber</a>
+    <a title="Go to record entry page @pg.PageNumber" href="@(Model.UrlPath)pageNumber=@pg.PageNumber&tag=@Uri.EscapeDataString(Model.Pagination.Tag ?? "")&link=@Model.Pagination.Link&find=@Uri.EscapeDataString(Model.Pagination.Find ?? "")">@pg.PageNumber</a>
     }
     @if (pg.IsNextPageSkipped) {
     <a class="skip">&bull;&bull;</a>
     }
     }
     @if (Model.Pagination.PageNumber < Model.Pagination.PageCount) {
-    <a title="Go to the next page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber + 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&raquo;</a>
+    <a title="Go to the next page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber + 1)&tag=@Uri.EscapeDataString(Model.Pagination.Tag ?? "")&link=@Model.Pagination.Link&find=@Uri.EscapeDataString(Model.Pagination.Find ?? "")">&raquo;</a>
     }
 </div>
 }
@@ -43,7 +43,7 @@
                     @if (recordEntry.ActiveRecordEntryTags.Any()) {
                     <div class="srb-tag">
                         @foreach (var tag in recordEntry.ActiveRecordEntryTags) {
-                        <a href="/?tag=@tag.Tag">@tag.Tag</a>
+                        <a href="/?tag=@Uri.EscapeDataString(tag.Tag)">@tag.Tag</a>
                         }
                     </div>
                     }
@@ -71,20 +71,20 @@
 @if (Model.Pagination.PageCount > 1) {
 <div class="pagination">
     @if (Model.Pagination.PageNumber > 1) {
-    <a title="Go to previous page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber - 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&laquo;</a>
+    <a title="Go to previous page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber - 1)&tag=@Uri.EscapeDataString(Model.Pagination.Tag ?? "")&link=@Model.Pagination.Link&find=@Uri.EscapeDataString(Model.Pagination.Find ?? "")">&laquo;</a>
     }
     @foreach (var pg in Model.Pagination.Pages) {
     @if (pg.IsSelected) {
     <a class="pagination-active">@pg.PageNumber</a>
     } else {
-    <a title="Go to record entry page @pg.PageNumber" href="@(Model.UrlPath)pageNumber=@pg.PageNumber&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">@pg.PageNumber</a>
+    <a title="Go to record entry page @pg.PageNumber" href="@(Model.UrlPath)pageNumber=@pg.PageNumber&tag=@Uri.EscapeDataString(Model.Pagination.Tag ?? "")&link=@Model.Pagination.Link&find=@Uri.EscapeDataString(Model.Pagination.Find ?? "")">@pg.PageNumber</a>
     }
     @if (pg.IsNextPageSkipped) {
     <a class="skip">&bull;&bull;</a>
     }
     }
     @if (Model.Pagination.PageNumber < Model.Pagination.PageCount) {
-    <a title="Go to the next page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber + 1)&tag=@Model.Pagination.Tag&link=@Model.Pagination.Link&find=@Model.Pagination.Find">&raquo;</a>
+    <a title="Go to the next page of record entries" href="@(Model.UrlPath)pageNumber=@(Model.Pagination.PageNumber + 1)&tag=@Uri.EscapeDataString(Model.Pagination.Tag ?? "")&link=@Model.Pagination.Link&find=@Uri.EscapeDataString(Model.Pagination.Find ?? "")">&raquo;</a>
     }
 </div>
 }

@@ -14,7 +14,7 @@
         </thead>
         <tbody>
             @foreach (var (tag, tagCount) in Model.Tags) {
-            <tr><td><a href="/?tag=@tag">@tag</a></td><td>@tagCount</td></tr>
+            <tr><td><a href="/?tag=@Uri.EscapeDataString(tag)">@tag</a></td><td>@tagCount</td></tr>
             }
         </tbody>
     </table>
