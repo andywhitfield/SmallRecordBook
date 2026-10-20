@@ -92,9 +92,17 @@ $(function() {
     const tagEditInput = $('#srb-entry-tags');
     const tagInput = $('input[type="hidden"][name="tags"]');
 
+    tagEditInput.on('keypress', function(e) {
+        if (e.which === 13) {
+            updateTags();
+            return false;
+        }
+        return true;
+    });
+
     function writeTags() {
         $('a', tagViewElements).remove();
-        for (const t of tagInput.val().split(' ').toReversed()) {
+        for (const t of tagInput.val().split(' ').filter(i => i).toReversed()) {
             var newTagEl = $('<a href="/?tag=' + encodeURIComponent(t) + '"></a>');
             newTagEl.text(t);
             tagViewElements.prepend(newTagEl, ' ');
@@ -110,16 +118,18 @@ $(function() {
         tagEditElements.show();
         tagEditInput.focus();
     });
-    $('#src-entry-tag-edit-ok').click(function() {
-        tagEditElements.hide();
-        tagViewElements.show();
-        tagInput.val(tagEditInput.val());
-        writeTags();
-    });
+    $('#src-entry-tag-edit-ok').click(updateTags);
     $('#src-entry-tag-edit-cancel').click(function() {
         tagEditElements.hide();
         tagViewElements.show();
     });
+
+    function updateTags() {
+        tagEditElements.hide();
+        tagViewElements.show();
+        tagInput.val(tagEditInput.val());
+        writeTags();
+    }
 });
 </script>
 }
