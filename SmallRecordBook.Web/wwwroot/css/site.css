@@ -384,9 +384,8 @@ ul.srb-list li.placeholder:before {
 }
 
 :root {
-    --fc-event-text-color: black;
-    --fc-event-bg-color: white;
-    --fc-event-border-color: white;
+    --fc-classic-primary: black !important;
+    --fc-classic-primary-foreground: white !important;
 }
 
 .srb-event-title {
@@ -456,5 +455,10 @@ ul.srb-list li.placeholder:before {
     ul.srb-list-item>li,
     span.selected {
         color: black;
+    }
+
+    :root {
+        --fc-classic-primary: white !important;
+        --fc-classic-primary-foreground: black !important;
     }
 }
