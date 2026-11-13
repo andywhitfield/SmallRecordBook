@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SmallRecordBook.Web.Tests/SmallRecordBook.Web.Tests.csproj" />
+  <Project Path="SmallRecordBook.Web/SmallRecordBook.Web.csproj" />
+</Solution>
